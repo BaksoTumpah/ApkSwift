@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f2342">
+<title>ApkSwift</title>
+<link rel="icon" id="fav" href="data:image/webp;base64,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">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Plus+Jakarta+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#e9eff6;--surface:#fff;--ink:#0f2342;--muted:#5a6a85;--line:#d3dde9;--band:#0f2342;--bandink:#f1f6ff;--go:#2fbf71;--goink:#06231a;--amber:rgba(255,181,71,.3);--bar:#ffb547;--barink:#2c1b00;--shadow:0 18px 36px -18px rgba(15,35,66,.45)}
+@media (prefers-color-scheme:dark){:root{--paper:#0a1325;--surface:#13213b;--ink:#e8effb;--muted:#91a2bf;--line:#243757;--band:#060d1b;--bandink:#eaf1ff;--go:#3ddc84;--goink:#04170e;--amber:rgba(255,191,92,.22);--bar:#ffbf5c;--shadow:0 18px 36px -18px rgba(0,0,0,.7)}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 16px/1.6 "Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding-bottom:env(safe-area-inset-bottom,0)}
+a{color:inherit}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--go);outline-offset:2px}
+.wrap{max-width:880px;margin:0 auto;padding:0 22px}
+h1,h2,h3{font-family:"Bricolage Grotesque","Plus Jakarta Sans",system-ui,sans-serif;margin:0;letter-spacing:-.01em}
+
+/* pita atas dengan tepi miring seperti sayap pesawat kertas */
+.band{background:var(--band);color:var(--bandink);padding:calc(env(safe-area-inset-top,0px) + 26px) 0 64px;clip-path:polygon(0 0,100% 0,100% calc(100% - 34px),0 100%)}
+.band .wrap{display:flex;flex-wrap:wrap;gap:22px 28px;align-items:center}
+.id{display:flex;align-items:center;gap:18px;flex:1 1 320px;min-width:0}
+.brand{border:0;background:none;padding:0;cursor:pointer;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
+.mark{width:84px;height:84px;border-radius:26px;background:#fff;display:grid;place-items:center;box-shadow:var(--shadow);flex:none;overflow:hidden}
+.mark img{width:84%;height:84%;object-fit:contain;display:block}
+.id h1{font-size:clamp(30px,8vw,44px);line-height:1.05;font-weight:800}
+.id p{margin:6px 0 0;color:color-mix(in srgb,var(--bandink) 72%,transparent);font-size:15px;max-width:34ch}
+#q{flex:1 1 240px;min-width:0;border:0;border-radius:14px;padding:14px 18px;background:rgba(255,255,255,.12);color:var(--bandink);box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.22)}
+#q::placeholder{color:rgba(241,246,255,.6)}
+
+.devbar{background:var(--bar);color:var(--barink);font-weight:700;font-size:14px}
+.devbar .wrap{display:flex;gap:8px;align-items:center;padding-top:8px;padding-bottom:8px;flex-wrap:wrap}
+.devbar span{flex:1;min-width:120px}
+.devbar button{background:var(--barink);color:var(--bar);border:0;border-radius:10px;padding:6px 14px;font-weight:700;cursor:pointer}
+
+main{margin-top:-18px;min-height:46vh}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 22px}
+.chips button{border:0;background:var(--surface);color:var(--muted);border-radius:10px;padding:7px 14px;font-weight:500;cursor:pointer;box-shadow:inset 0 0 0 1px var(--line)}
+.chips button[aria-pressed="true"]{background:var(--ink);color:var(--paper);box-shadow:none;font-weight:700}
+
+.ico{width:58px;height:58px;border-radius:30%;flex:none;object-fit:cover;display:grid;place-items:center;font:800 23px "Bricolage Grotesque",sans-serif;background:hsl(var(--h) 70% 88%);color:hsl(var(--h) 60% 24%)}
+@media (prefers-color-scheme:dark){.ico{background:hsl(var(--h) 38% 26%);color:hsl(var(--h) 85% 88%)}}
+
+.feat{display:grid;grid-template-columns:1fr 36%;border-radius:30px;overflow:hidden;text-decoration:none;color:var(--bandink);min-height:228px;margin-bottom:34px;box-shadow:var(--shadow);background:linear-gradient(104deg,var(--band) 0 62%,hsl(var(--h) 62% 46%) 62% 100%)}
+.feat .ft{padding:28px 22px 28px 28px;display:flex;flex-direction:column;align-items:flex-start;gap:10px}
+.feat h2{font-size:clamp(26px,6vw,36px);line-height:1.1;font-weight:800}
+.feat p{margin:0;opacity:.8;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:15px}
+.badge{background:var(--bar);color:var(--barink);font-weight:700;font-size:13px;border-radius:8px;padding:2px 10px}
+.feat .go{margin-top:auto;pointer-events:none}
+.feat .fi{display:grid;place-items:center}
+.feat .ico{width:min(112px,70%);height:auto;aspect-ratio:1;font-size:46px;background:#fff;color:hsl(var(--h) 60% 28%);box-shadow:0 18px 30px -12px rgba(0,0,0,.45)}
+
+.list{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:0 36px}
+.row{display:flex;align-items:center;gap:14px;padding:15px 2px;border-bottom:1px solid var(--line);text-decoration:none}
+.row .t{min-width:0;flex:1}
+.row b{display:block;font-weight:700;line-height:1.3}
+.row:hover b{text-decoration:underline;text-underline-offset:3px}
+.row .t span{display:block;color:var(--muted);font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ver{background:var(--amber);border-radius:8px;padding:3px 10px;font-weight:700;font-size:13px;white-space:nowrap}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:14px;padding:12px 20px;font-weight:700;cursor:pointer;text-decoration:none;background:var(--ink);color:var(--paper);transition:transform .15s}
+.btn:hover{transform:translateY(-2px)}
+.go{background:var(--go);color:var(--goink);padding:14px 24px;font-size:16px}
+.ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--line)}
+.back{position:sticky;top:calc(env(safe-area-inset-top,0px) + 10px);z-index:5;display:inline-flex;align-items:center;gap:10px;margin:6px 0 18px;padding:6px 18px 6px 6px;border-radius:16px;background:var(--surface);color:var(--ink);font-weight:700;text-decoration:none;box-shadow:0 8px 20px -10px rgba(15,35,66,.5),inset 0 0 0 1px var(--line)}
+.back i{width:38px;height:38px;border-radius:12px;background:var(--ink);color:var(--paper);display:grid;place-items:center;transition:transform .15s}
+.back:hover i{transform:translateX(-3px)}
+.dhead{display:flex;gap:22px;align-items:center;padding:26px;border-radius:30px;background:hsl(var(--h) 70% 90%)}
+@media (prefers-color-scheme:dark){.dhead{background:hsl(var(--h) 36% 19%)}}
+.dhead .ico{width:96px;height:96px;font-size:40px;background:#fff;color:hsl(var(--h) 60% 28%);box-shadow:0 14px 26px -14px rgba(0,0,0,.5)}
+.dhead h2{font-size:clamp(26px,7vw,38px);line-height:1.1;font-weight:800}
+.dhead p{margin:4px 0 0;color:var(--muted)}
+.cta{display:flex;gap:10px;flex-wrap:wrap;margin:22px 0 8px}
+.spec{margin:18px 0 0}
+.spec div{display:flex;justify-content:space-between;gap:16px;padding:12px 0;border-bottom:1px solid var(--line)}
+.spec dt{color:var(--muted)}
+.spec dd{margin:0;font-weight:700;text-align:right;word-break:break-all}
+h3{font-size:21px;margin:38px 0 10px;font-weight:700}
+.desc{white-space:pre-line;color:var(--muted);margin:0}
+.vrow{display:flex;gap:14px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--line)}
+.vrow .t{flex:1;min-width:0}
+.vrow small{color:var(--muted)}
+.empty{color:var(--muted);padding:44px 0;text-align:center}
+.note{padding:12px 16px;border-radius:14px;margin-bottom:18px;background:var(--surface);box-shadow:inset 0 0 0 1px var(--line);font-size:15px}
+footer{padding:54px 0 70px;color:var(--muted);font-size:14px}
+
+dialog{background:var(--surface);color:var(--ink);border:0;border-radius:26px;padding:26px;width:min(580px,calc(100vw - 20px));max-height:92vh;box-shadow:0 30px 70px -20px rgba(0,0,0,.6)}
+dialog::backdrop{background:rgba(6,13,27,.62)}
+dialog h2{font-size:24px}
+label{display:block;font-size:14px;color:var(--muted);margin:14px 0 4px}
+dialog input,dialog select,dialog textarea{width:100%;background:var(--paper);border:0;box-shadow:inset 0 0 0 1px var(--line);border-radius:12px;padding:10px 12px}
+textarea{min-height:84px;resize:vertical}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.acts{display:flex;gap:10px;justify-content:flex-end;margin-top:22px;flex-wrap:wrap}
+.err{color:#d6453d;font-size:14px;margin-top:10px;min-height:1em}
+#dOk{color:var(--go);font-size:14px;margin-top:10px;font-weight:700}
+.chk{display:flex;gap:10px;align-items:center}
+.chk input{width:auto}
+.icorow{display:flex;gap:16px;align-items:center;margin-top:12px}
+.icorow .mark{width:72px;height:72px;border-radius:22px;box-shadow:inset 0 0 0 1px var(--line)}
+details{margin-top:16px;border-top:1px solid var(--line);padding-top:12px}
+summary{cursor:pointer;font-weight:700}
+.hide{display:none!important}
+@media (max-width:480px){.two{grid-template-columns:1fr}.mark{width:68px;height:68px;border-radius:21px}.feat{grid-template-columns:1fr 34%}.feat .ft{padding:22px 14px 22px 22px}.dhead{padding:20px;gap:16px}.dhead .ico{width:76px;height:76px}}
+@media (prefers-reduced-motion:reduce){.btn,.back i{transition:none}}
+</style>
+</head>
+<body>
+<div id="devbar" class="devbar hide"><div class="wrap"><span>Mode developer aktif</span><button id="btnNew">Tambah aplikasi</button><button id="btnDev">Panel dev</button><button id="btnOut">Keluar</button></div></div>
+<header class="band">
+  <div class="wrap">
+    <div class="id">
+      <button class="brand" id="brand" aria-label="Beranda"><span class="mark"><img id="logo" alt="" src="data:image/webp;base64,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"></span></button>
+      <div><h1 id="siteName">ApkSwift</h1><p id="tag"></p></div>
+    </div>
+    <input id="q" type="search" placeholder="Cari aplikasi" aria-label="Cari aplikasi">
+  </div>
+</header>
+<div class="wrap">
+  <main id="main"><div id="notice"></div><div id="view"></div></main>
+  <footer id="foot"></footer>
+</div>
+
+<dialog id="loginDlg">
+  <h2>Masuk developer</h2>
+  <label for="lUser">Username</label><input id="lUser" autocomplete="username" autocapitalize="off">
+  <label for="lPass">Kata sandi</label><input id="lPass" type="password" autocomplete="current-password">
+  <div class="err" id="lErr"></div>
+  <div class="acts"><button class="btn ghost" data-close>Batal</button><button class="btn" id="lGo">Masuk</button></div>
+</dialog>
+
+<dialog id="formDlg">
+  <h2 id="fTitle">Aplikasi</h2>
+  <div class="two">
+    <div><label for="fName">Nama aplikasi</label><input id="fName"></div>
+    <div><label for="fPkg">Package / ID unik</label><input id="fPkg" placeholder="com.contoh.aplikasi"></div>
+  </div>
+  <div class="two">
+    <div><label for="fCat">Kategori</label><input id="fCat" placeholder="Alat, Pendidikan, ..."></div>
+    <div><label for="fIcon">Ikon aplikasi (gambar)</label><input id="fIcon" type="file" accept="image/*"></div>
+  </div>
+  <label for="fDesc">Deskripsi</label><textarea id="fDesc"></textarea>
+  <div class="two">
+    <div><label for="fVer">Versi baru</label><input id="fVer" placeholder="1.0.0"></div>
+    <div><label for="fSize">Ukuran</label><input id="fSize" placeholder="otomatis dari berkas"></div>
+  </div>
+  <label for="fLog">Catatan perubahan</label><textarea id="fLog"></textarea>
+  <label for="fApk">Berkas APK (diunggah ke GitHub Releases)</label><input id="fApk" type="file" accept=".apk">
+  <label for="fUrl">atau tempel link unduhan langsung</label><input id="fUrl" type="url" placeholder="https://...">
+  <details><summary>Pengaturan GitHub (hanya tersimpan di perangkat ini)</summary>
+    <label for="gRepo">Repo publik (pemilik/nama)</label><input id="gRepo" placeholder="username/apk-files">
+    <label for="gTok">Token akses (izin Contents: read &amp; write)</label><input id="gTok" type="password" autocomplete="off">
+  </details>
+  <div class="err" id="fErr"></div>
+  <div class="acts">
+    <button class="btn ghost" id="fDel">Hapus</button>
+    <button class="btn ghost" data-close>Batal</button>
+    <button class="btn" id="fSave">Simpan</button>
+  </div>
+</dialog>
+
+<dialog id="devDlg">
+  <h2>Panel developer</h2>
+  <p class="desc" id="dStat"></p>
+  <details open><summary>Ikon situs</summary>
+    <div class="icorow"><span class="mark"><img id="pvLogo" alt=""></span><div><label for="iFile" style="margin-top:0">Gambar baru (sebaiknya persegi)</label><input id="iFile" type="file" accept="image/*"></div></div>
+    <div class="acts"><button class="btn ghost" id="iReset">Kembali ke bawaan</button><button class="btn" id="iSave">Simpan ikon</button></div>
+  </details>
+  <details><summary>Pengaturan situs</summary>
+    <label for="sName">Nama situs</label><input id="sName">
+    <label for="sFoot">Teks footer</label><input id="sFoot">
+    <label class="chk"><input type="checkbox" id="sMaint"> Mode perbaikan (pengunjung melihat pesan, developer tetap bisa masuk)</label>
+    <label for="sMsg">Pesan mode perbaikan</label><input id="sMsg" placeholder="Situs sedang diperbaiki, coba lagi nanti.">
+    <div class="acts"><button class="btn" id="sSave">Simpan pengaturan</button></div>
+  </details>
+  <details><summary>Cadangan data</summary>
+    <p class="desc">Ekspor semua aplikasi ke berkas JSON, atau impor kembali dari cadangan.</p>
+    <div class="acts" style="justify-content:flex-start"><button class="btn ghost" id="bExp">Ekspor</button><button class="btn ghost" id="bImpBtn">Impor</button><input id="bImp" type="file" accept=".json" class="hide"></div>
+  </details>
+  <details><summary>Ubah username dan kata sandi</summary>
+    <div class="two"><div><label for="aCurU">Username saat ini</label><input id="aCurU" autocapitalize="off"></div><div><label for="aCurP">Kata sandi saat ini</label><input id="aCurP" type="password" autocomplete="off"></div></div>
+    <div class="two"><div><label for="aNewU">Username baru</label><input id="aNewU" autocapitalize="off" placeholder="kosongkan jika tetap"></div><div><label for="aNewP">Kata sandi baru</label><input id="aNewP" type="password" autocomplete="new-password" placeholder="kosongkan jika tetap"></div></div>
+    <p class="desc" style="font-size:14px;margin-top:10px">Disarankan kata sandi minimal 10 karakter, campuran huruf dan angka.</p>
+    <div class="acts"><button class="btn" id="aGo">Simpan akun</button></div>
+  </details>
+  <div class="err" id="dErr"></div><div id="dOk"></div>
+  <div class="acts"><button class="btn ghost" data-close>Tutup</button></div>
+</dialog>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script>
+/* ====== ISI BAGIAN INI SAJA ====== */
+var CONFIG = {
+  siteName: "ApkSwift",
+  tagline: "Aplikasi buatan sendiri, diunduh langsung dari sumbernya.",
+  footer: "Semua aplikasi dibuat dan dibagikan langsung oleh pengelola situs ini.",
+  devEmail: "dev@toko-apk.local",   // email internal akun developer, tidak ditampilkan ke siapa pun
+  firebase: {
+    apiKey: "AIzaSyAkIQW8CF8CbtGU04XWYCatJDCjvn6oZDI",
+    authDomain: "apkswift-4ea9e.firebaseapp.com",
+    projectId: "apkswift-4ea9e",
+    storageBucket: "apkswift-4ea9e.firebasestorage.app",
+    messagingSenderId: "889230200161",
+    appId: "1:889230200161:web:5e3a84648f63baedfb0920"
+  }
+};
+/* ================================== */
+
+var DEFAULT_LOGO = "data:image/webp;base64,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";
+var $ = function(s){ return document.querySelector(s); };
+var esc = function(s){ return String(s == null ? "" : s).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); };
+var apps = [], user = null, db = null, auth = null, editing = null, site = {}, cat = "", pendingLogo = null;
+var ok = !!CONFIG.firebase.apiKey;
+$("#tag").textContent = CONFIG.tagline;
+
+function applySite(){
+  var n = site.name || CONFIG.siteName, lg = site.logo || DEFAULT_LOGO;
+  $("#siteName").textContent = n; document.title = n; $("#foot").textContent = site.footer || CONFIG.footer;
+  $("#logo").src = lg; $("#fav").href = lg;
+}
+applySite();
+
+if (ok) {
+  firebase.initializeApp(CONFIG.firebase);
+  db = firebase.firestore(); auth = firebase.auth();
+  db.collection("config").doc("site").onSnapshot(function(d){ site = d.exists ? d.data() : {}; applySite(); render(); });
+  auth.onAuthStateChanged(function(u){ user = u; $("#devbar").classList.toggle("hide", !u); render(); });
+  db.collection("apps").orderBy("updated", "desc").onSnapshot(function(s){
+    apps = s.docs.map(function(d){ var o = d.data(); o.id = d.id; return o; }); render();
+  }, function(e){ $("#notice").innerHTML = '<div class="note">Gagal memuat data: ' + esc(e.message) + '</div>'; });
+} else {
+  $("#notice").innerHTML = '<div class="note">Firebase belum diisi. Buka berkas index.html dan isi blok CONFIG di bagian script.</div>';
+}
+
+/* ---------- tampilan ---------- */
+function hue(s){ var h = 0, P = [158, 196, 220, 256, 290, 334, 8, 24]; for (var i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) % 997; return P[h % P.length]; }
+function icon(a){
+  return a.icon ? '<img class="ico" alt="" src="' + esc(a.icon) + '">'
+    : '<span class="ico" style="--h:' + hue(a.id || a.name || "") + '">' + esc((a.name || "?").charAt(0).toUpperCase()) + '</span>';
+}
+function latest(a){ return (a.versions && a.versions[0]) || {}; }
+var BACK = '<a class="back" href="#/" aria-label="Kembali ke halaman awal"><i><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></i>Semua aplikasi</a>';
+function render(){
+  var v = $("#view");
+  if (site.maint && !user) { v.innerHTML = '<p class="empty">' + esc(site.msg || "Situs sedang diperbaiki, coba lagi nanti.") + '</p>'; return; }
+  var h = location.hash.match(/^#\/app\/(.+)$/);
+  if (h) {
+    var a = apps.find(function(x){ return x.id === decodeURIComponent(h[1]); });
+    v.innerHTML = a ? detail(a) : BACK + '<p class="empty">Aplikasi tidak ditemukan.</p>';
+    return;
+  }
+  v.innerHTML = home();
+}
+function home(){
+  var q = $("#q").value.trim().toLowerCase(), seen = {}, cats = [];
+  apps.forEach(function(a){ if (a.cat && !seen[a.cat]) { seen[a.cat] = 1; cats.push(a.cat); } });
+  var list = apps.filter(function(a){
+    return (!cat || a.cat === cat) && (!q || (a.name + " " + (a.cat || "") + " " + (a.desc || "")).toLowerCase().indexOf(q) > -1);
+  });
+  var out = "";
+  if (cats.length) out += '<div class="chips"><button data-cat="" aria-pressed="' + (!cat) + '">Semua</button>' + cats.map(function(c){
+    return '<button data-cat="' + esc(c) + '" aria-pressed="' + (cat === c) + '">' + esc(c) + '</button>'; }).join("") + '</div>';
+  if (!list.length) return out + '<p class="empty">' + (ok ? (apps.length ? "Tidak ada aplikasi yang cocok." : "Belum ada aplikasi.") : "") + '</p>';
+  var rest = list;
+  if (!q && !cat) {
+    var f = list[0], l = latest(f); rest = list.slice(1);
+    out += '<a class="feat" href="#/app/' + encodeURIComponent(f.id) + '" style="--h:' + hue(f.id || f.name || "") + '"><div class="ft"><span class="badge">Terbaru</span><h2>' + esc(f.name) + '</h2><p>' + esc(f.desc || "") + '</p><span class="btn go">Lihat dan unduh ' + esc(l.v || "") + '</span></div><div class="fi">' + icon(f) + '</div></a>';
+  }
+  if (rest.length) out += '<div class="list">' + rest.map(function(a){
+    return '<a class="row" href="#/app/' + encodeURIComponent(a.id) + '">' + icon(a) + '<span class="t"><b>' + esc(a.name) + '</b><span>' + esc(a.desc || a.cat || "") + '</span></span><span class="ver">v' + esc(latest(a).v || "") + '</span></a>';
+  }).join("") + '</div>';
+  return out;
+}
+function escAttr(t){ return String(t).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;"); }
+function copyText(t, msg){
+  function ok(){ alert(msg || "Tersalin."); }
+  if (navigator.clipboard && window.isSecureContext) { navigator.clipboard.writeText(t).then(ok, function(){ prompt("Salin link ini:", t); }); }
+  else { prompt("Salin link ini:", t); }
+}
+function shareApp(id, name){
+  var url = location.origin + location.pathname + "#/app/" + encodeURIComponent(id);
+  if (navigator.share) { navigator.share({ title: name, text: "Unduh " + name + " (APK)", url: url }).catch(function(){}); }
+  else { copyText(url, "Link halaman aplikasi disalin. Tempel ke WhatsApp atau media lain."); }
+}
+function detail(a){
+  var l = latest(a);
+  return BACK
+   + '<section class="dhead" style="--h:' + hue(a.id || a.name || "") + '">' + icon(a) + '<div><h2>' + esc(a.name) + '</h2><p>' + esc(a.cat || "Aplikasi Android") + '</p></div></section>'
+   + '<div class="cta"><a class="btn go" href="' + esc(l.url) + '" download rel="noopener">Unduh APK ' + esc(l.v) + (l.size ? ' (' + esc(l.size) + ')' : '') + '</a>'
+   + '<button class="btn ghost" onclick="shareApp(' + escAttr(JSON.stringify(a.id)) + ',' + escAttr(JSON.stringify(a.name)) + ')">Bagikan</button>'
+   + '<button class="btn ghost" onclick="copyText(' + escAttr(JSON.stringify(l.url)) + ',\'Link unduhan APK disalin.\')">Salin link APK</button>'
+   + (user ? '<button class="btn ghost" data-edit="' + esc(a.id) + '">Edit atau rilis versi baru</button>' : '') + '</div>'
+   + '<dl class="spec"><div><dt>Versi terbaru</dt><dd>' + esc(l.v) + '</dd></div><div><dt>Ukuran berkas</dt><dd>' + esc(l.size || "-") + '</dd></div><div><dt>Terakhir diperbarui</dt><dd>' + esc(l.date || "-") + '</dd></div><div><dt>Package</dt><dd>' + esc(a.pkg || "-") + '</dd></div></dl>'
+   + '<h3>Tentang aplikasi</h3><p class="desc">' + esc(a.desc || "") + '</p>'
+   + '<h3>Riwayat versi</h3>' + (a.versions || []).map(function(x){
+      return '<div class="vrow"><div class="t"><b>' + esc(x.v) + '</b> <small>' + esc(x.date) + (x.size ? ', ' + esc(x.size) : '') + '</small><p class="desc">' + esc(x.log || "") + '</p></div><a class="btn ghost" href="' + esc(x.url) + '" download rel="noopener">Unduh</a></div>';
+    }).join("");
+}
+window.addEventListener("hashchange", function(){ render(); scrollTo(0, 0); });
+$("#q").addEventListener("input", function(){ if (location.hash && location.hash !== "#/") location.hash = "#/"; render(); });
+document.addEventListener("click", function(e){
+  var c = e.target.closest("[data-close]"); if (c) c.closest("dialog").close();
+  var ed = e.target.closest("[data-edit]"); if (ed) openForm(apps.find(function(x){ return x.id === ed.dataset.edit; }));
+  var ct = e.target.closest("[data-cat]"); if (ct) { cat = ct.dataset.cat; render(); }
+});
+
+/* ---------- pintu rahasia: ketuk logo 7x dalam 4 detik ---------- */
+var taps = [];
+$("#brand").addEventListener("click", function(){
+  if (location.hash && location.hash !== "#/") location.hash = "#/";
+  var n = Date.now(); taps = taps.filter(function(t){ return n - t < 4000; }); taps.push(n);
+  if (taps.length >= 7) { taps = []; if (ok && !user) $("#loginDlg").showModal(); }
+});
+$("#lGo").addEventListener("click", function(){
+  $("#lErr").textContent = "";
+  auth.signInWithEmailAndPassword(CONFIG.devEmail, $("#lUser").value.trim() + "|" + $("#lPass").value)
+    .then(function(){ $("#loginDlg").close(); $("#lPass").value = ""; })
+    .catch(function(){ $("#lErr").textContent = "Username atau kata sandi salah."; });
+});
+$("#btnOut").addEventListener("click", function(){ auth.signOut(); });
+$("#btnNew").addEventListener("click", function(){ openForm(null); });
+
+/* ---------- formulir developer ---------- */
+function openForm(a){
+  editing = a;
+  $("#fTitle").textContent = a ? "Edit " + a.name : "Aplikasi baru";
+  $("#fName").value = a ? a.name : ""; $("#fPkg").value = a ? a.pkg || "" : ""; $("#fPkg").disabled = !!a;
+  $("#fCat").value = a ? a.cat || "" : ""; $("#fDesc").value = a ? a.desc || "" : "";
+  $("#fVer").value = ""; $("#fSize").value = ""; $("#fLog").value = ""; $("#fUrl").value = "";
+  $("#fApk").value = ""; $("#fIcon").value = ""; $("#fErr").textContent = "";
+  $("#fDel").classList.toggle("hide", !a);
+  try { $("#gRepo").value = localStorage.getItem("gh_repo") || ""; $("#gTok").value = localStorage.getItem("gh_tok") || ""; } catch (e) {}
+  $("#formDlg").showModal();
+}
+function slug(s){ return s.toLowerCase().replace(/[^a-z0-9.]+/g, "-").replace(/^-+|-+$/g, ""); }
+function fmtSize(b){ return b > 1048576 ? (b / 1048576).toFixed(1) + " MB" : Math.round(b / 1024) + " KB"; }
+function resizeIcon(file, px){
+  return new Promise(function(res, rej){
+    var img = new Image(), u = URL.createObjectURL(file);
+    img.onload = function(){
+      var c = document.createElement("canvas"); c.width = c.height = px;
+      var s = Math.min(img.width, img.height), ctx = c.getContext("2d");
+      ctx.drawImage(img, (img.width - s) / 2, (img.height - s) / 2, s, s, 0, 0, px, px);
+      URL.revokeObjectURL(u); res(c.toDataURL("image/webp", 0.88));
+    };
+    img.onerror = function(){ rej(new Error("Gambar tidak bisa dibaca.")); }; img.src = u;
+  });
+}
+function ghB64(file){   // isi berkas -> base64 (tanpa awalan data:)
+  return new Promise(function(res, rej){
+    var fr = new FileReader();
+    fr.onload = function(){ var r = String(fr.result); res(r.slice(r.indexOf(",") + 1)); };
+    fr.onerror = function(){ rej(new Error("Berkas tidak bisa dibaca.")); };
+    fr.readAsDataURL(file);
+  });
+}
+// Cadangan bila unggah ke Releases diblokir browser: simpan APK sebagai berkas di repo lewat api.github.com (mendukung CORS).
+async function ghUploadContents(file, repo, H, tag){
+  if (file.size > 70 * 1024 * 1024) throw new Error("APK lebih dari 70 MB, terlalu besar untuk jalur ini. Unggah lewat web GitHub (Releases) lalu tempel link unduhannya.");
+  var path = "apk/" + tag + "-" + file.name.replace(/[^A-Za-z0-9._-]/g, "_");
+  var r = await fetch("https://api.github.com/repos/" + repo + "/contents/" + path.split("/").map(encodeURIComponent).join("/"),
+    { method: "PUT", headers: H, body: JSON.stringify({ message: "Tambah " + file.name, content: await ghB64(file) }) });
+  if (!r.ok) {
+    var m = ""; try { m = (await r.json()).message || ""; } catch (e) {}
+    throw new Error("Simpan APK ke repo gagal (" + r.status + (m ? ": " + m : "") + "). Cek nama repo dan izin token (Contents: read & write untuk repo itu).");
+  }
+  var j = await r.json();
+  return (j.content && j.content.download_url) || ("https://github.com/" + repo + "/raw/HEAD/" + path);
+}
+async function ghUpload(file, tag, title){
+  var repo = $("#gRepo").value.trim().replace(/^https?:\/\/github\.com\//i, "").replace(/\.git$/i, "").replace(/^\/+|\/+$/g, "");
+  var tok = $("#gTok").value.replace(/[^\x21-\x7E]/g, "");   // buang spasi, baris baru, karakter aneh bekas salin-tempel
+  if (!repo || !tok) throw new Error("Isi repo dan token GitHub dulu (bagian Pengaturan GitHub).");
+  if (!/^[\w.-]+\/[\w.-]+$/.test(repo)) throw new Error('Format repo harus "pemilik/nama", contoh: username/apk-files (bukan link).');
+  try { localStorage.setItem("gh_repo", repo); localStorage.setItem("gh_tok", tok); } catch (e) {}
+  var H = { Authorization: "Bearer " + tok, Accept: "application/vnd.github+json" };
+  var rel = null;
+  try {
+    var r = await fetch("https://api.github.com/repos/" + repo + "/releases", { method: "POST", headers: H, body: JSON.stringify({ tag_name: tag, name: title }) });
+    if (r.ok) rel = await r.json();
+    else if (r.status === 401) throw new Error("Token ditolak GitHub (401): token salah atau kedaluwarsa. Buat token baru.");
+    else if (r.status === 403 || r.status === 404) throw new Error("GitHub menolak (" + r.status + "): periksa nama repo dan pastikan token punya izin Contents: Read and write untuk repo itu.");
+    // 422 (mis. repo masih kosong): lanjut ke jalur cadangan di bawah
+  } catch (e) { if (!(e instanceof TypeError)) throw e; }   // TypeError = jaringan/CORS -> jalur cadangan
+  if (rel) {
+    try {
+      var up = await fetch("https://uploads.github.com/repos/" + repo + "/releases/" + rel.id + "/assets?name=" + encodeURIComponent(file.name),
+        { method: "POST", headers: Object.assign({ "Content-Type": "application/vnd.android.package-archive" }, H), body: file });
+      if (up.ok) return (await up.json()).browser_download_url;
+    } catch (e) { /* diblokir browser (CORS): pakai jalur cadangan */ }
+    try { await fetch("https://api.github.com/repos/" + repo + "/releases/" + rel.id, { method: "DELETE", headers: H }); } catch (e) {}   // rapikan rilis kosong
+  }
+  return ghUploadContents(file, repo, H, tag);
+}
+$("#fSave").addEventListener("click", async function(){
+  var btn = this, err = $("#fErr"); err.textContent = "";
+  try {
+    var name = $("#fName").value.trim(), pkg = editing ? editing.pkg : $("#fPkg").value.trim(), ver = $("#fVer").value.trim();
+    if (!name || !pkg) throw new Error("Nama dan package wajib diisi.");
+    var file = $("#fApk").files[0], url = $("#fUrl").value.trim(), size = $("#fSize").value.trim();
+    if (!ver && (file || url)) throw new Error("Isi versi untuk rilis baru.");
+    btn.disabled = true; btn.textContent = "Menyimpan...";
+    var id = editing ? editing.id : slug(pkg);
+    var data = { name: name, pkg: pkg, cat: $("#fCat").value.trim(), desc: $("#fDesc").value.trim(), updated: Date.now(),
+                 icon: editing ? editing.icon || "" : "", versions: editing ? (editing.versions || []).slice() : [] };
+    if ($("#fIcon").files[0]) data.icon = await resizeIcon($("#fIcon").files[0], 144);
+    if (file || url) {
+      if (file) { url = await ghUpload(file, id + "-v" + ver + "-" + Date.now().toString(36), name + " " + ver); size = size || fmtSize(file.size); }
+      var entry = { v: ver, url: url, size: size, log: $("#fLog").value.trim(), date: new Date().toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" }) };
+      data.versions = data.versions.filter(function(x){ return x.v !== ver; }); data.versions.unshift(entry);
+    }
+    if (!data.versions.length) throw new Error("Tambahkan minimal satu versi (berkas APK atau link).");
+    await db.collection("apps").doc(id).set(data);
+    $("#formDlg").close(); location.hash = "#/app/" + encodeURIComponent(id);
+  } catch (e) { err.textContent = e.message; }
+  btn.disabled = false; btn.textContent = "Simpan";
+});
+$("#fDel").addEventListener("click", async function(){
+  if (!editing || !confirm("Hapus " + editing.name + " dari situs? Berkas di GitHub tidak ikut terhapus.")) return;
+  await db.collection("apps").doc(editing.id).delete(); $("#formDlg").close(); location.hash = "#/";
+});
+
+/* ---------- panel developer ---------- */
+function dmsg(t, bad){ $("#dErr").textContent = bad ? t : ""; $("#dOk").textContent = bad ? "" : t; }
+function clearAcc(){ ["aCurU", "aCurP", "aNewU", "aNewP"].forEach(function(i){ $("#" + i).value = ""; }); }
+$("#btnDev").addEventListener("click", function(){
+  var v = apps.reduce(function(n, a){ return n + (a.versions || []).length; }, 0);
+  $("#dStat").textContent = apps.length + " aplikasi, " + v + " versi rilis tersimpan.";
+  $("#sName").value = site.name || CONFIG.siteName; $("#sFoot").value = site.footer || CONFIG.footer;
+  $("#sMaint").checked = !!site.maint; $("#sMsg").value = site.msg || "";
+  pendingLogo = null; $("#iFile").value = ""; $("#pvLogo").src = site.logo || DEFAULT_LOGO;
+  clearAcc(); dmsg(""); $("#devDlg").showModal();
+});
+$("#iFile").addEventListener("change", async function(){
+  var f = this.files[0]; if (!f) return;
+  try { pendingLogo = await resizeIcon(f, 256); $("#pvLogo").src = pendingLogo; dmsg(""); }
+  catch (e) { pendingLogo = null; dmsg(e.message, 1); }
+});
+$("#iSave").addEventListener("click", function(){
+  if (!pendingLogo) return dmsg("Pilih gambar dulu.", 1);
+  db.collection("config").doc("site").set({ logo: pendingLogo }, { merge: true })
+    .then(function(){ pendingLogo = null; dmsg("Ikon situs diperbarui."); }).catch(function(e){ dmsg(e.message, 1); });
+});
+$("#iReset").addEventListener("click", function(){
+  db.collection("config").doc("site").set({ logo: "" }, { merge: true })
+    .then(function(){ pendingLogo = null; $("#pvLogo").src = DEFAULT_LOGO; dmsg("Ikon dikembalikan ke bawaan."); }).catch(function(e){ dmsg(e.message, 1); });
+});
+$("#sSave").addEventListener("click", function(){
+  db.collection("config").doc("site").set({ name: $("#sName").value.trim(), footer: $("#sFoot").value.trim(), maint: $("#sMaint").checked, msg: $("#sMsg").value.trim() }, { merge: true })
+    .then(function(){ dmsg("Pengaturan tersimpan."); }).catch(function(e){ dmsg(e.message, 1); });
+});
+$("#bExp").addEventListener("click", function(){
+  var blob = new Blob([JSON.stringify({ apps: apps, site: site }, null, 2)], { type: "application/json" });
+  var a = document.createElement("a"); a.href = URL.createObjectURL(blob);
+  a.download = "cadangan-apkswift-" + new Date().toISOString().slice(0, 10) + ".json"; a.click();
+});
+$("#bImpBtn").addEventListener("click", function(){ $("#bImp").click(); });
+$("#bImp").addEventListener("change", async function(){
+  var f = this.files[0]; if (!f) return;
+  try {
+    var list = JSON.parse(await f.text()).apps;
+    if (!Array.isArray(list)) throw new Error("x");
+    if (!confirm("Impor " + list.length + " aplikasi? Aplikasi dengan ID sama akan ditimpa.")) { this.value = ""; return; }
+    for (var i = 0; i < list.length; i++) { var o = list[i], id = o.id; delete o.id; await db.collection("apps").doc(id).set(o); }
+    dmsg(list.length + " aplikasi diimpor.");
+  } catch (e) { dmsg("Berkas cadangan tidak valid atau akses ditolak.", 1); }
+  this.value = "";
+});
+$("#aGo").addEventListener("click", async function(){
+  var cu = $("#aCurU").value.trim(), cp = $("#aCurP").value, nu = $("#aNewU").value.trim() || cu, np = $("#aNewP").value || cp;
+  if (!cu || !cp) return dmsg("Isi username dan kata sandi saat ini.", 1);
+  if (nu.length < 3 || np.length < 6) return dmsg("Username minimal 3 karakter dan kata sandi minimal 6 karakter.", 1);
+  if (nu === cu && np === cp) return dmsg("Belum ada yang diubah.", 1);
+  try {
+    await user.reauthenticateWithCredential(firebase.auth.EmailAuthProvider.credential(CONFIG.devEmail, cu + "|" + cp));
+    await user.updatePassword(nu + "|" + np);
+    clearAcc(); dmsg("Berhasil. Masuk berikutnya memakai username dan kata sandi yang baru.");
+  } catch (e) { dmsg("Username atau kata sandi saat ini salah.", 1); }
+});
+render();
+</script>
+</body>
+</html>
