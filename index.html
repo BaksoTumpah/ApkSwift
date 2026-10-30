@@ -299,8 +299,9 @@ function detail(a){
    + (user ? '<button class="btn ghost" data-edit="' + esc(a.id) + '">Edit atau rilis versi baru</button>' : '') + '</div>'
    + '<dl class="spec"><div><dt>Versi terbaru</dt><dd>' + esc(l.v) + '</dd></div><div><dt>Ukuran berkas</dt><dd>' + esc(l.size || "-") + '</dd></div><div><dt>Terakhir diperbarui</dt><dd>' + esc(l.date || "-") + '</dd></div><div><dt>Package</dt><dd>' + esc(a.pkg || "-") + '</dd></div></dl>'
    + '<h3>Tentang aplikasi</h3><p class="desc">' + esc(a.desc || "") + '</p>'
-   + '<h3>Riwayat versi</h3>' + (a.versions || []).map(function(x){
-      return '<div class="vrow"><div class="t"><b>' + esc(x.v) + '</b> <small>' + esc(x.date) + (x.size ? ', ' + esc(x.size) : '') + '</small><p class="desc">' + esc(x.log || "") + '</p></div><a class="btn ghost" href="' + esc(dlUrl(x.url)) + '" download rel="noopener">Unduh</a></div>';
+   + '<h3>Riwayat versi</h3>' + (a.versions || []).map(function(x, i){
+      var del = (user && i > 0) ? '<button class="btn ghost" data-delver="' + esc(a.id) + '" data-v="' + esc(x.v) + '">Hapus</button>' : '';
+      return '<div class="vrow"><div class="t"><b>' + esc(x.v) + '</b> <small>' + esc(x.date) + (x.size ? ', ' + esc(x.size) : '') + '</small><p class="desc">' + esc(x.log || "") + '</p></div><div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end"><a class="btn ghost" href="' + esc(dlUrl(x.url)) + '" download rel="noopener">Unduh</a>' + del + '</div></div>';
     }).join("");
 }
 window.addEventListener("hashchange", function(){ render(); scrollTo(0, 0); });
@@ -309,6 +310,7 @@ document.addEventListener("click", function(e){
   var c = e.target.closest("[data-close]"); if (c) c.closest("dialog").close();
   var ed = e.target.closest("[data-edit]"); if (ed) openForm(apps.find(function(x){ return x.id === ed.dataset.edit; }));
   var ct = e.target.closest("[data-cat]"); if (ct) { cat = ct.dataset.cat; render(); }
+  var dv = e.target.closest("[data-delver]"); if (dv) delVersion(dv.dataset.delver, dv.dataset.v);
 });
 
 /* ---------- pintu rahasia: ketuk logo 7x dalam 4 detik ---------- */
@@ -445,6 +447,14 @@ $("#fSave").addEventListener("click", async function(){
   } catch (e) { err.textContent = e.message; }
   btn.disabled = false; btn.textContent = "Simpan";
 });
+async function delVersion(id, v){
+  var a = apps.find(function(x){ return x.id === id; });
+  if (!user || !a || (a.versions || []).length < 2) return;
+  if (a.versions[0].v === v) return alert("Versi terbaru tidak bisa dihapus dari sini. Pakai Edit atau rilis versi baru.");
+  if (!confirm("Hapus versi " + v + " dari riwayat " + a.name + "? Berkas APK di GitHub tidak ikut terhapus.")) return;
+  try { await db.collection("apps").doc(id).update({ versions: a.versions.filter(function(x){ return x.v !== v; }) }); }
+  catch (e) { alert("Gagal menghapus: " + e.message); }
+}
 $("#fDel").addEventListener("click", async function(){
   if (!editing || !confirm("Hapus " + editing.name + " dari situs? Berkas di GitHub tidak ikut terhapus.")) return;
   await db.collection("apps").doc(editing.id).delete(); $("#formDlg").close(); location.hash = "#/";
