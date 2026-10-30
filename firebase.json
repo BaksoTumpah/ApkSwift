@@ -1,5 +1,6 @@
 {
   "hosting": {
+    "site": "apkswift",
     "public": ".",
     "ignore": [
       "firebase.json",
