@@ -1,0 +1,61 @@
+{
+  "groups": [
+    {
+      "title": "Header",
+      "items": [
+        { "key": "tagline", "label": "Slogan di bawah nama situs", "configKey": "tagline", "long": true },
+        { "key": "searchPlaceholder", "label": "Teks kolom pencarian", "def": "Cari aplikasi" }
+      ]
+    },
+    {
+      "title": "Beranda",
+      "items": [
+        { "key": "chipAll", "label": "Tombol filter semua kategori", "def": "Semua" },
+        { "key": "badgeNew", "label": "Lencana aplikasi unggulan", "def": "Terbaru" },
+        { "key": "featCta", "label": "Tombol di kartu unggulan (diikuti nomor versi)", "def": "Lihat dan unduh" },
+        { "key": "sectionOther", "label": "Judul daftar aplikasi", "def": "Aplikasi lainnya" },
+        { "key": "sectionResult", "label": "Judul daftar saat mencari atau memfilter", "def": "Hasil" },
+        { "key": "emptyNone", "label": "Pesan bila belum ada aplikasi", "def": "Belum ada aplikasi." },
+        { "key": "emptyNoMatch", "label": "Pesan bila pencarian tidak cocok", "def": "Tidak ada aplikasi yang cocok. Coba kata kunci lain.", "long": true }
+      ]
+    },
+    {
+      "title": "Halaman aplikasi",
+      "items": [
+        { "key": "backLabel", "label": "Tombol kembali", "def": "Semua aplikasi" },
+        { "key": "defaultCat", "label": "Kategori bila kosong", "def": "Aplikasi Android" },
+        { "key": "downloadBtn", "label": "Tombol unduh (diikuti versi dan ukuran)", "def": "Unduh APK" },
+        { "key": "downloadStarted", "label": "Teks tombol setelah unduhan dimulai", "def": "Unduhan dimulai" },
+        { "key": "shareBtn", "label": "Tombol bagikan", "def": "Bagikan" },
+        { "key": "copyBtn", "label": "Tombol salin link", "def": "Salin link APK" },
+        { "key": "srcNote", "label": "Catatan sumber berkas", "def": "Berkas diunduh langsung dari GitHub Releases pengembang.", "long": true },
+        { "key": "specVersion", "label": "Label versi", "def": "Versi terbaru" },
+        { "key": "specSize", "label": "Label ukuran", "def": "Ukuran berkas" },
+        { "key": "specUpdated", "label": "Label tanggal pembaruan", "def": "Terakhir diperbarui" },
+        { "key": "specPackage", "label": "Label package", "def": "Package" },
+        { "key": "aboutHeading", "label": "Judul deskripsi", "def": "Tentang aplikasi" },
+        { "key": "howSummary", "label": "Judul panduan pasang", "def": "Cara memasang di HP" },
+        { "key": "howStep1", "label": "Langkah pasang 1", "def": "Ketuk Unduh APK dan tunggu sampai selesai.", "long": true },
+        { "key": "howStep2", "label": "Langkah pasang 2", "def": "Buka berkas yang terunduh. Jika diminta, izinkan pemasangan dari sumber ini.", "long": true },
+        { "key": "howStep3", "label": "Langkah pasang 3", "def": "Ketuk Pasang, lalu buka aplikasinya.", "long": true },
+        { "key": "historyHeading", "label": "Judul riwayat versi", "def": "Riwayat versi" },
+        { "key": "verDownload", "label": "Tombol unduh di riwayat versi", "def": "Unduh" }
+      ]
+    },
+    {
+      "title": "Pesan singkat",
+      "items": [
+        { "key": "toastCopyApk", "label": "Setelah link APK disalin", "def": "Link unduhan APK disalin." },
+        { "key": "toastCopyPage", "label": "Setelah link halaman disalin", "def": "Link halaman aplikasi disalin. Tempel ke WhatsApp atau media lain.", "long": true }
+      ]
+    },
+    {
+      "title": "Halaman tidak ditemukan",
+      "items": [
+        { "key": "nfTitle", "label": "Judul", "def": "Halaman tidak ditemukan" },
+        { "key": "nfText", "label": "Keterangan", "def": "Alamat ini tidak ada atau aplikasinya sudah dihapus.", "long": true },
+        { "key": "nfBtn", "label": "Tombol", "def": "Lihat semua aplikasi" }
+      ]
+    }
+  ]
+}

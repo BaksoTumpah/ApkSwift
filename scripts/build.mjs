@@ -33,6 +33,12 @@ const devSrc = read("src/developer.html").toString("utf8");
 const grab = (k) => { const m = devSrc.match(new RegExp(k + ':\\s*"([^"]*)"')); if (!m) throw new Error("CONFIG." + k + " tidak ditemukan di src/developer.html"); return m[1]; };
 const CFG = { project: grab("projectId"), apiKey: grab("apiKey"), siteName: grab("siteName"), tagline: grab("tagline"), footer: grab("footer") };
 
+/* ---------- teks yang tampil: daftar dan nilai bawaan ada di src/texts.json, bisa diganti dari panel developer (config/site.texts) ---------- */
+const TEXT_GROUPS = JSON.parse(read("src/texts.json").toString("utf8")).groups;
+const TEXT_DEF = {};
+for (const g of TEXT_GROUPS) for (const it of g.items) { if (it.configKey) it.def = CFG[it.configKey]; TEXT_DEF[it.key] = it.def; }
+const JS_TEXT_KEYS = ["sectionOther", "sectionResult", "downloadStarted", "toastCopyApk", "toastCopyPage"];   // dipakai site.js di browser
+
 /* ---------- baca data Firestore ---------- */
 function decValue(v) {
   if (v == null) return null;
@@ -152,14 +158,15 @@ function page(o) {
   const P = paths(depth, abs);
   const js = INLINE ? "<script>\n" + ctx.js + "</script>" : '<script src="' + P.file(ctx.jsPath) + '" defer></script>';
   const fsAttr = ctx.fsUrl ? ' data-fs="' + esc(ctx.fsUrl) + '"' : "";
-  return "<!doctype html>\n<html lang=\"id\"" + fsAttr + ">\n<head>\n" + headHtml(o) + "\n</head>\n<body>\n" + body + "\n" + js + "\n</body>\n</html>\n";
+  const txAttr = ' data-tx="' + esc(JSON.stringify(Object.fromEntries(JS_TEXT_KEYS.map((k) => [k, ctx.t[k]])))) + '"';
+  return "<!doctype html>\n<html lang=\"id\"" + fsAttr + txAttr + ">\n<head>\n" + headHtml(o) + "\n</head>\n<body>\n" + body + "\n" + js + "\n</body>\n</html>\n";
 }
 function header(ctx, depth, isHome, abs = false) {
   const P = paths(depth, abs);
   const logo = INLINE ? ctx.logo.uri : P.file(ctx.logo.path);
   return '<header class="top"><div class="wrap">\n  <div class="id"><a class="brand" href="' + P.home + '" aria-label="Beranda ' + esc(ctx.siteName) + '"><span class="mark"><img src="' + esc(logo) + '" alt="" width="54" height="54"></span></a>\n    <div>' +
     (isHome ? '<h1 id="siteName">' + esc(ctx.siteName) + "</h1>" : '<div class="nm">' + esc(ctx.siteName) + "</div>") + '<p id="tag">' + esc(ctx.tagline) + "</p></div></div>\n" +
-    '  <form role="search" action="' + P.home + '" method="get"><input id="q" name="q" type="search" placeholder="Cari aplikasi" aria-label="Cari aplikasi" enterkeyhint="search" autocomplete="off"></form>\n</div></header>';
+    '  <form role="search" action="' + P.home + '" method="get"><input id="q" name="q" type="search" placeholder="' + esc(ctx.t.searchPlaceholder) + '" aria-label="' + esc(ctx.t.searchPlaceholder) + '" enterkeyhint="search" autocomplete="off"></form>\n</div></header>';
 }
 function icon(a, ctx, depth, alt = "", lazy = false) {
   const im = ctx.icons.get(a.id);
@@ -169,19 +176,19 @@ function icon(a, ctx, depth, alt = "", lazy = false) {
 
 /* ---------- beranda ---------- */
 function homePage(ctx) {
-  const { apps } = ctx, P = paths(0), cats = [];
+  const { apps, t } = ctx, P = paths(0), cats = [];
   apps.forEach((a) => { if (a.cat && !cats.includes(a.cat)) cats.push(a.cat); });
   let body = header(ctx, 0, true) + '\n<div class="wrap">\n<main id="main">\n';
-  if (!apps.length) body += '<p class="empty">Belum ada aplikasi.</p>\n';
+  if (!apps.length) body += '<p class="empty">' + esc(t.emptyNone) + "</p>\n";
   else {
-    if (cats.length) body += '<div class="chips" id="chips"><button type="button" data-cat="" aria-pressed="true">Semua</button>' + cats.map((c) => '<button type="button" data-cat="' + esc(c) + '" aria-pressed="false">' + esc(c) + "</button>").join("") + "</div>\n";
+    if (cats.length) body += '<div class="chips" id="chips"><button type="button" data-cat="" aria-pressed="true">' + esc(t.chipAll) + "</button>" + cats.map((c) => '<button type="button" data-cat="' + esc(c) + '" aria-pressed="false">' + esc(c) + "</button>").join("") + "</div>\n";
     const f = apps[0], l = latest(f);
-    body += '<a class="feat" id="feat" href="' + P.app(f.id) + '" style="--h:' + hue(f.id) + '">' + SWOOSH + '<div class="ft"><span class="badge">Terbaru</span><h2>' + esc(f.name) + "</h2><p>" + esc(f.desc || "") + '</p><span class="btn go">' + DL_ICON + "Lihat dan unduh " + esc(l.v || "") + '</span></div><div class="fi">' + icon(f, ctx, 0) + "</div></a>\n";
+    body += '<a class="feat" id="feat" href="' + P.app(f.id) + '" style="--h:' + hue(f.id) + '">' + SWOOSH + '<div class="ft"><span class="badge">' + esc(t.badgeNew) + "</span><h2>" + esc(f.name) + "</h2><p>" + esc(f.desc || "") + '</p><span class="btn go">' + DL_ICON + esc(t.featCta) + " " + esc(l.v || "") + '</span></div><div class="fi">' + icon(f, ctx, 0) + "</div></a>\n";
     const rest = apps.length - 1;
-    body += '<h2 class="sec" id="sec"' + (rest ? "" : " hidden") + '><span id="secTitle">Aplikasi lainnya</span><small id="secCount">' + rest + '</small></h2>\n<div class="list" id="list"' + (rest ? "" : " hidden") + ">\n" +
+    body += '<h2 class="sec" id="sec"' + (rest ? "" : " hidden") + '><span id="secTitle">' + esc(t.sectionOther) + '</span><small id="secCount">' + rest + '</small></h2>\n<div class="list" id="list"' + (rest ? "" : " hidden") + ">\n" +
       apps.map((a, i) => '<a class="row" href="' + P.app(a.id) + '" style="--h:' + hue(a.id) + '" data-cat="' + esc(a.cat || "") + '" data-search="' + esc((a.name + " " + (a.cat || "") + " " + (a.desc || "")).toLowerCase()) + '"' + (i === 0 ? ' data-first="1" hidden' : "") + ">" +
         icon(a, ctx, 0, "", i > 0) + '<span class="t"><b>' + esc(a.name) + "</b><span>" + esc(a.desc || a.cat || "") + '</span></span><span class="ver">v' + esc(latest(a).v || "") + "</span></a>").join("\n") + "\n</div>\n" +
-      '<p class="empty" id="nores" hidden>Tidak ada aplikasi yang cocok. Coba kata kunci lain.</p>\n';
+      '<p class="empty" id="nores" hidden>' + esc(t.emptyNoMatch) + "</p>\n";
   }
   body += '</main>\n<footer id="foot">' + esc(ctx.footer) + "</footer>\n</div>";
   const names = apps.slice(0, 6).map((a) => a.name).join(", ");
@@ -193,19 +200,19 @@ function homePage(ctx) {
 
 /* ---------- halaman satu aplikasi ---------- */
 function appPage(a, ctx) {
-  const depth = 2, P = paths(depth), l = latest(a), url = dlUrl(l.url) || "";
+  const depth = 2, P = paths(depth), l = latest(a), url = dlUrl(l.url) || "", t = ctx.t;
   const fromGithub = /^https:\/\/github\.com\//.test(url);
   const vers = (a.versions || []).filter((x) => x && x.v);
-  let body = header(ctx, depth, false) + '\n<div class="wrap">\n<main id="main">\n<a class="back" href="' + P.home + '" aria-label="Kembali ke halaman awal">' + BACK_ICON + "Semua aplikasi</a>\n<article>\n" +
-    '<section class="dhead" style="--h:' + hue(a.id) + '">' + SWOOSH + '<div class="dtop">' + icon(a, ctx, depth, "Ikon " + a.name) + "<div><h1>" + esc(a.name) + "</h1><p>" + esc(a.cat || "Aplikasi Android") + "</p></div></div>" +
-    '<div class="cta"><a class="btn go" href="' + esc(url) + '" download rel="noopener">' + DL_ICON + '<span aria-live="polite">Unduh APK ' + esc(l.v || "") + (l.size ? " (" + esc(l.size) + ")" : "") + "</span></a>" +
-    '<button type="button" class="btn ghost" data-share="' + esc(a.name) + '">Bagikan</button><button type="button" class="btn ghost" data-copy="' + esc(url) + '">Salin link APK</button></div>' +
-    (fromGithub ? '<p class="src">' + SHIELD + "Berkas diunduh langsung dari GitHub Releases pengembang.</p>" : "") + "</section>\n" +
-    '<dl class="spec"><div><dt>Versi terbaru</dt><dd>' + esc(l.v || "-") + "</dd></div><div><dt>Ukuran berkas</dt><dd>" + esc(l.size || "-") + "</dd></div><div><dt>Terakhir diperbarui</dt><dd>" + esc(l.date || "-") + "</dd></div><div><dt>Package</dt><dd>" + esc(a.pkg || a.id) + "</dd></div></dl>\n" +
-    '<h2 class="hd">Tentang aplikasi</h2><p class="desc">' + esc(a.desc || "") + "</p>\n" +
-    '<details class="how"><summary>Cara memasang di HP</summary><ol><li>Ketuk Unduh APK dan tunggu sampai selesai.</li><li>Buka berkas yang terunduh. Jika diminta, izinkan pemasangan dari sumber ini.</li><li>Ketuk Pasang, lalu buka aplikasinya.</li></ol></details>\n' +
-    '<h2 class="hd">Riwayat versi</h2><div class="vlist">' + vers.map((x, i) => '<div class="vrow' + (i === 0 ? " cur" : "") + '"><div class="t"><b>' + esc(x.v) + "</b><small>" + esc(x.date || "") + (x.size ? ", " + esc(x.size) : "") + "</small>" + (x.log ? '<p class="desc">' + esc(x.log) + "</p>" : "") +
-      '</div><div class="vact"><a class="btn ghost" href="' + esc(dlUrl(x.url) || "") + '" download rel="noopener">Unduh</a></div></div>').join("") + "</div>\n</article>\n</main>\n<footer id=\"foot\">" + esc(ctx.footer) + "</footer>\n</div>";
+  let body = header(ctx, depth, false) + '\n<div class="wrap">\n<main id="main">\n<a class="back" href="' + P.home + '" aria-label="Kembali ke halaman awal">' + BACK_ICON + esc(t.backLabel) + "</a>\n<article>\n" +
+    '<section class="dhead" style="--h:' + hue(a.id) + '">' + SWOOSH + '<div class="dtop">' + icon(a, ctx, depth, "Ikon " + a.name) + "<div><h1>" + esc(a.name) + "</h1><p>" + esc(a.cat || t.defaultCat) + "</p></div></div>" +
+    '<div class="cta"><a class="btn go" href="' + esc(url) + '" download rel="noopener">' + DL_ICON + '<span aria-live="polite">' + esc(t.downloadBtn) + " " + esc(l.v || "") + (l.size ? " (" + esc(l.size) + ")" : "") + "</span></a>" +
+    '<button type="button" class="btn ghost" data-share="' + esc(a.name) + '">' + esc(t.shareBtn) + '</button><button type="button" class="btn ghost" data-copy="' + esc(url) + '">' + esc(t.copyBtn) + "</button></div>" +
+    (fromGithub ? '<p class="src">' + SHIELD + esc(t.srcNote) + "</p>" : "") + "</section>\n" +
+    '<dl class="spec"><div><dt>' + esc(t.specVersion) + "</dt><dd>" + esc(l.v || "-") + "</dd></div><div><dt>" + esc(t.specSize) + "</dt><dd>" + esc(l.size || "-") + "</dd></div><div><dt>" + esc(t.specUpdated) + "</dt><dd>" + esc(l.date || "-") + "</dd></div><div><dt>" + esc(t.specPackage) + "</dt><dd>" + esc(a.pkg || a.id) + "</dd></div></dl>\n" +
+    '<h2 class="hd">' + esc(t.aboutHeading) + '</h2><p class="desc">' + esc(a.desc || "") + "</p>\n" +
+    '<details class="how"><summary>' + esc(t.howSummary) + "</summary><ol><li>" + esc(t.howStep1) + "</li><li>" + esc(t.howStep2) + "</li><li>" + esc(t.howStep3) + "</li></ol></details>\n" +
+    '<h2 class="hd">' + esc(t.historyHeading) + '</h2><div class="vlist">' + vers.map((x, i) => '<div class="vrow' + (i === 0 ? " cur" : "") + '"><div class="t"><b>' + esc(x.v) + "</b><small>" + esc(x.date || "") + (x.size ? ", " + esc(x.size) : "") + "</small>" + (x.log ? '<p class="desc">' + esc(x.log) + "</p>" : "") +
+      '</div><div class="vact"><a class="btn ghost" href="' + esc(dlUrl(x.url) || "") + '" download rel="noopener">' + esc(t.verDownload) + "</a></div></div>").join("") + "</div>\n</article>\n</main>\n<footer id=\"foot\">" + esc(ctx.footer) + "</footer>\n</div>";
   const canonical = SITE_URL + "/app/" + enc(safeId(a.id)) + "/";
   const im = ctx.icons.get(a.id);
   const image = SITE_URL + "/" + (im ? im.path : ctx.logo.path);
@@ -225,8 +232,8 @@ function appPage(a, ctx) {
 
 /* ---------- 404 ---------- */
 function notFoundPage(ctx) {
-  const body = header(ctx, 0, false, true) + '\n<div class="wrap"><main id="main" class="nf"><h1>Halaman tidak ditemukan</h1><p>Alamat ini tidak ada atau aplikasinya sudah dihapus.</p><a class="btn go" href="/">' + DL_ICON + "Lihat semua aplikasi</a></main></div>";
-  return page({ depth: 0, abs: true, ctx, body, title: "Halaman tidak ditemukan | " + ctx.siteName, desc: "Halaman tidak ditemukan.", canonical: SITE_URL + "/404", robots: "noindex" });
+  const body = header(ctx, 0, false, true) + '\n<div class="wrap"><main id="main" class="nf"><h1>' + esc(ctx.t.nfTitle) + "</h1><p>" + esc(ctx.t.nfText) + '</p><a class="btn go" href="/">' + DL_ICON + esc(ctx.t.nfBtn) + "</a></main></div>";
+  return page({ depth: 0, abs: true, ctx, body, title: ctx.t.nfTitle + " | " + ctx.siteName, desc: ctx.t.nfTitle + ".", canonical: SITE_URL + "/404", robots: "noindex" });
 }
 
 /* ---------- halaman developer ---------- */
@@ -235,6 +242,7 @@ function devPage(ctx) {
   let html = devSrc;
   html = html.replace('<link rel="stylesheet" href="{{CSS}}">', "<style>\n" + ctx.css + "</style>");
   html = html.replace("{{HOME}}", P.home);
+  html = html.replace("{{TEXTS}}", () => JSON.stringify(TEXT_GROUPS).replace(/</g, "\\u003c"));   // daftar teks + nilai bawaan untuk editor
   if (html.includes("{{")) throw new Error("Penanda {{...}} tersisa di halaman developer");
   return html;
 }
@@ -282,6 +290,13 @@ valid.sort((x, y) => (y.updated || 0) - (x.updated || 0) || String(x.id).localeC
 const seen = new Set();
 for (const a of valid) { const k = safeId(a.id); if (seen.has(k)) throw new Error("ID halaman bentrok: " + k); seen.add(k); }
 
+// teks tampil: isian dari panel developer (kosong = pakai bawaan), dipotong 400 karakter
+const T = {};
+for (const k of Object.keys(TEXT_DEF)) {
+  const v = data.site.texts && data.site.texts[k];
+  T[k] = typeof v === "string" && v.trim() ? v.trim().slice(0, 400) : TEXT_DEF[k];
+}
+
 const fonts = await loadFonts();
 const css = (fonts ? fonts.css : "") + read("src/site.css").toString("utf8"), js = read("src/site.js").toString("utf8");
 const cssPath = "", jsPath = "assets/site." + sha(js) + ".js";
@@ -289,7 +304,7 @@ if (!INLINE) put(jsPath, js);
 const logoSrc = dataUri(data.site.logo) || { ext: "webp", buf: read("src/logo.webp") };
 const ctx = {
   apps: valid, css, js, cssPath, jsPath, fonts,
-  siteName: data.site.name || CFG.siteName, tagline: CFG.tagline, footer: data.site.footer || CFG.footer,
+  siteName: data.site.name || CFG.siteName, t: T, tagline: T.tagline, footer: data.site.footer || CFG.footer,
   logo: addImage("logo", logoSrc), icons: new Map(),
   fsUrl: opt("mock") || INLINE ? "" : FS_BASE + "/v1/projects/" + CFG.project + "/databases/(default)/documents/config/site?key=" + CFG.apiKey,
 };

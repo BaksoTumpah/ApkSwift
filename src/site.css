@@ -158,6 +158,8 @@ input[type=file]::file-selector-button{border:0;border-radius:999px;padding:6px 
 details{margin-top:16px;border-top:1px solid var(--line);padding-top:12px}
 summary{cursor:pointer;font-weight:600;padding:10px 0}
 .hide{display:none!important}
+dialog .txg{margin:22px 0 0;font:600 12px/1.2 var(--d);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+#txEditor textarea{min-height:58px}
 @media (max-width:480px){.two{grid-template-columns:1fr}.mark{width:48px;height:48px;border-radius:15px}.id h1{font-size:19px}}
 /* reaksi terhadap kursor (hanya mouse/touchpad): cahaya mengikuti kursor, tombol tertarik, ikon dan garis bergeser */
 @media (hover:hover) and (pointer:fine){

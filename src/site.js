@@ -4,6 +4,11 @@
   var $ = function (s, r) { return (r || document).querySelector(s); };
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
 
+  /* ---------- teks tampil: diisi build dari pengaturan developer (atribut data-tx), cadangan = teks bawaan ---------- */
+  var TX = {};
+  try { TX = JSON.parse(document.documentElement.dataset.tx || "{}"); } catch (e) {}
+  var tx = function (k, d) { return typeof TX[k] === "string" && TX[k] ? TX[k] : d; };
+
   /* ---------- pesan singkat ---------- */
   function toast(m) {
     var t = $("#toast");
@@ -26,18 +31,18 @@
 
   document.addEventListener("click", function (e) {
     var c = e.target.closest("[data-copy]");
-    if (c) copy(c.dataset.copy, "Link unduhan APK disalin.");
+    if (c) copy(c.dataset.copy, tx("toastCopyApk", "Link unduhan APK disalin."));
     var s = e.target.closest("[data-share]");
     if (s) {
       var url = location.href.split("#")[0], name = s.dataset.share;
       if (navigator.share) navigator.share({ title: name, text: "Unduh " + name + " (APK)", url: url }).catch(function () {});
-      else copy(url, "Link halaman aplikasi disalin. Tempel ke WhatsApp atau media lain.");
+      else copy(url, tx("toastCopyPage", "Link halaman aplikasi disalin. Tempel ke WhatsApp atau media lain."));
     }
     var a = e.target.closest("a.go[download]");
     if (a && !a.dataset.busy) {
       var t = a.querySelector("span");
       if (t) {
-        var old = t.textContent; a.dataset.busy = "1"; t.textContent = "Unduhan dimulai";
+        var old = t.textContent; a.dataset.busy = "1"; t.textContent = tx("downloadStarted", "Unduhan dimulai");
         setTimeout(function () { t.textContent = old; delete a.dataset.busy; }, 2600);
       }
     }
@@ -55,7 +60,7 @@
         r.hidden = !visible; if (visible) shown++;
       });
       if (feat) feat.hidden = active;
-      secTitle.firstChild.nodeValue = active ? "Hasil" : "Aplikasi lainnya";
+      secTitle.firstChild.nodeValue = active ? tx("sectionResult", "Hasil") : tx("sectionOther", "Aplikasi lainnya");
       secCount.textContent = shown;
       sec.hidden = shown === 0;
       list.hidden = shown === 0;

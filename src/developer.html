@@ -98,6 +98,11 @@
     <label for="sMsg">Pesan mode perbaikan</label><input id="sMsg" placeholder="Situs sedang diperbaiki, coba lagi nanti.">
     <div class="acts"><button class="btn" id="sSave">Simpan pengaturan</button></div>
   </details>
+  <details id="txDet"><summary>Teks halaman</summary>
+    <p class="desc" style="font-size:14px">Semua teks bawaan yang tampil di situs. Kosongkan kolom untuk memakai teks bawaan (terlihat abu-abu di dalam kolom). Nama situs dan teks footer ada di Pengaturan situs.</p>
+    <div id="txEditor"></div>
+    <div class="acts"><button class="btn ghost" id="txReset">Kembalikan semua ke bawaan</button><button class="btn" id="txSave">Simpan teks</button></div>
+  </details>
   <details><summary>Cadangan data</summary>
     <p class="desc">Ekspor semua aplikasi ke berkas JSON, atau impor kembali dari cadangan.</p>
     <div class="acts" style="justify-content:flex-start"><button class="btn ghost" id="bExp">Ekspor</button><button class="btn ghost" id="bImpBtn">Impor</button><input id="bImp" type="file" accept=".json" class="hide"></div>
@@ -115,6 +120,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script type="application/json" id="textsData">{{TEXTS}}</script>
 <script>
 /* ====== ISI BAGIAN INI SAJA ====== */
 var CONFIG = {
@@ -139,12 +145,18 @@ var $ = function(s){ return document.querySelector(s); };
 var esc = function(s){ return String(s == null ? "" : s).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); };
 var authKnown = false, loaded = false, apps = [], user = null, db = null, auth = null, editing = null, site = {}, cat = "", pendingLogo = null;
 var ok = !!CONFIG.firebase.apiKey;
-$("#tag").textContent = CONFIG.tagline;
+// Teks tampil: daftar dan nilai bawaan diisi saat build dari src/texts.json; isian developer tersimpan di config/site.texts
+var TEXTS = []; try { TEXTS = JSON.parse($("#textsData").textContent); } catch (e) {}
+var TX_DEF = {}; TEXTS.forEach(function(g){ g.items.forEach(function(it){ TX_DEF[it.key] = it.def; }); });
+if (!TX_DEF.tagline) TX_DEF.tagline = CONFIG.tagline;
+function tx(k){ var v = site.texts && site.texts[k]; return (typeof v === "string" && v.trim()) ? v.trim().slice(0, 400) : (TX_DEF[k] == null ? "" : TX_DEF[k]); }
 
 function applySite(){
   var n = site.name || CONFIG.siteName, lg = site.logo || DEFAULT_LOGO;
   $("#siteName").textContent = n; document.title = n; $("#foot").textContent = site.footer || CONFIG.footer;
   $("#logo").src = lg; $("#fav").href = lg;
+  $("#tag").textContent = tx("tagline");
+  $("#q").placeholder = tx("searchPlaceholder"); $("#q").setAttribute("aria-label", tx("searchPlaceholder"));
 }
 applySite();
 
@@ -167,10 +179,11 @@ function icon(a){
     : '<span class="ico" style="--h:' + hue(a.id || a.name || "") + '">' + esc((a.name || "?").charAt(0).toUpperCase()) + '</span>';
 }
 function latest(a){ return (a.versions && a.versions[0]) || {}; }
-var BACK = '<a class="back" href="#/" aria-label="Kembali ke halaman awal"><i><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></i>Semua aplikasi</a>';
+var BACK_ICON = '<a class="back" href="#/" aria-label="Kembali ke halaman awal"><i><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></i>';
+function back(){ return BACK_ICON + esc(tx("backLabel")) + "</a>"; }
 function skeleton(){
   var rows = ""; for (var i = 0; i < 3; i++) rows += '<div class="sk sk-row"></div>';
-  var body = /^#\/app\//.test(location.hash) ? BACK + '<div class="sk sk-head"></div><div class="sk sk-spec"></div>' : '<div class="sk sk-feat"></div><div class="list">' + rows + '</div>';
+  var body = /^#\/app\//.test(location.hash) ? back() + '<div class="sk sk-head"></div><div class="sk sk-spec"></div>' : '<div class="sk sk-feat"></div><div class="list">' + rows + '</div>';
   return '<div role="status" aria-busy="true" aria-label="Memuat aplikasi">' + body + '</div>';
 }
 function render(){
@@ -184,7 +197,7 @@ function render(){
   if (h) {
     var a = apps.find(function(x){ return x.id === decodeURIComponent(h[1]); });
     if (a) document.title = a.name + " | Developer | " + base;
-    v.innerHTML = a ? detail(a) : BACK + '<p class="empty">Aplikasi ini tidak ada atau sudah dihapus.</p>';
+    v.innerHTML = a ? detail(a) : back() + '<p class="empty">Aplikasi ini tidak ada atau sudah dihapus.</p>';
     return;
   }
   v.innerHTML = home();
@@ -199,15 +212,15 @@ function home(){
     return (!cat || a.cat === cat) && (!q || (a.name + " " + (a.cat || "") + " " + (a.desc || "")).toLowerCase().indexOf(q) > -1);
   });
   var out = "";
-  if (cats.length) out += '<div class="chips"><button data-cat="" aria-pressed="' + (!cat) + '">Semua</button>' + cats.map(function(c){
+  if (cats.length) out += '<div class="chips"><button data-cat="" aria-pressed="' + (!cat) + '">' + esc(tx("chipAll")) + '</button>' + cats.map(function(c){
     return '<button data-cat="' + esc(c) + '" aria-pressed="' + (cat === c) + '">' + esc(c) + '</button>'; }).join("") + '</div>';
-  if (!list.length) return out + '<p class="empty">' + (ok ? (apps.length ? "Tidak ada aplikasi yang cocok. Coba kata kunci lain." : (user ? "Belum ada aplikasi. Pilih Tambah aplikasi di bilah atas." : "Belum ada aplikasi.")) : "") + '</p>';
+  if (!list.length) return out + '<p class="empty">' + (ok ? (apps.length ? esc(tx("emptyNoMatch")) : (user ? esc(tx("emptyNone")) + " Pilih Tambah aplikasi di bilah atas." : esc(tx("emptyNone")))) : "") + '</p>';
   var rest = list;
   if (!q && !cat) {
     var f = list[0], l = latest(f); rest = list.slice(1);
-    out += '<a class="feat" href="#/app/' + encodeURIComponent(f.id) + '" style="--h:' + hue(f.id || f.name || "") + '">' + SWOOSH + '<div class="ft"><span class="badge">Terbaru</span><h2>' + esc(f.name) + '</h2><p>' + esc(f.desc || "") + '</p><span class="btn go">' + DL_ICON + 'Lihat dan unduh ' + esc(l.v || "") + '</span></div><div class="fi">' + icon(f) + '</div></a>';
+    out += '<a class="feat" href="#/app/' + encodeURIComponent(f.id) + '" style="--h:' + hue(f.id || f.name || "") + '">' + SWOOSH + '<div class="ft"><span class="badge">' + esc(tx("badgeNew")) + '</span><h2>' + esc(f.name) + '</h2><p>' + esc(f.desc || "") + '</p><span class="btn go">' + DL_ICON + esc(tx("featCta")) + ' ' + esc(l.v || "") + '</span></div><div class="fi">' + icon(f) + '</div></a>';
   }
-  if (rest.length) out += '<h3 class="sec">' + ((q || cat) ? 'Hasil' : 'Aplikasi lainnya') + '<small>' + rest.length + '</small></h3><div class="list">' + rest.map(function(a){
+  if (rest.length) out += '<h3 class="sec">' + esc((q || cat) ? tx("sectionResult") : tx("sectionOther")) + '<small>' + rest.length + '</small></h3><div class="list">' + rest.map(function(a){
     return '<a class="row" href="#/app/' + encodeURIComponent(a.id) + '" style="--h:' + hue(a.id || a.name || "") + '">' + icon(a) + '<span class="t"><b>' + esc(a.name) + '</b><span>' + esc(a.desc || a.cat || "") + '</span></span><span class="ver">v' + esc(latest(a).v || "") + '</span></a>';
   }).join("") + '</div>';
   return out;
@@ -221,30 +234,30 @@ function copyText(t, msg){
 function shareApp(id, name){
   var url = location.origin + "/app/" + encodeURIComponent(id) + "/";
   if (navigator.share) { navigator.share({ title: name, text: "Unduh " + name + " (APK)", url: url }).catch(function(){}); }
-  else { copyText(url, "Link halaman publik aplikasi disalin. Tempel ke WhatsApp atau media lain."); }
+  else { copyText(url, tx("toastCopyPage")); }
 }
 function detail(a){
   var l = latest(a);
-  return BACK
+  return back()
    + '<section class="dhead" style="--h:' + hue(a.id || a.name || "") + '">' + SWOOSH
-   + '<div class="dtop">' + icon(a) + '<div><h2>' + esc(a.name) + '</h2><p>' + esc(a.cat || "Aplikasi Android") + '</p></div></div>'
-   + '<div class="cta"><a class="btn go" href="' + esc(dlUrl(l.url)) + '" download rel="noopener">' + DL_ICON + '<span aria-live="polite">Unduh APK ' + esc(l.v) + (l.size ? ' (' + esc(l.size) + ')' : '') + '</span></a>'
-   + '<button class="btn ghost" onclick="shareApp(' + escAttr(JSON.stringify(a.id)) + ',' + escAttr(JSON.stringify(a.name)) + ')">Bagikan</button>'
-   + '<button class="btn ghost" onclick="copyText(' + escAttr(JSON.stringify(dlUrl(l.url))) + ',\'Link unduhan APK disalin.\')">Salin link APK</button>'
-   + (user ? '<button class="btn ghost" data-edit="' + esc(a.id) + '">Edit atau rilis versi baru</button>' : '') + '</div>' + (/^https:\/\/github\.com\//.test(dlUrl(l.url)) ? '<p class="src">' + SHIELD + 'Berkas diunduh langsung dari GitHub Releases pengembang.</p>' : '') + '</section>'
-   + '<dl class="spec"><div><dt>Versi terbaru</dt><dd>' + esc(l.v) + '</dd></div><div><dt>Ukuran berkas</dt><dd>' + esc(l.size || "-") + '</dd></div><div><dt>Terakhir diperbarui</dt><dd>' + esc(l.date || "-") + '</dd></div><div><dt>Package</dt><dd>' + esc(a.pkg || "-") + '</dd></div></dl>'
-   + '<h3>Tentang aplikasi</h3><p class="desc">' + esc(a.desc || "") + '</p>'
-   + '<details class="how"><summary>Cara memasang di HP</summary><ol><li>Ketuk Unduh APK dan tunggu sampai selesai.</li><li>Buka berkas yang terunduh. Jika diminta, izinkan pemasangan dari sumber ini.</li><li>Ketuk Pasang, lalu buka aplikasinya.</li></ol></details>'
-   + '<h3>Riwayat versi</h3><div class="vlist">' + (a.versions || []).map(function(x, i){
+   + '<div class="dtop">' + icon(a) + '<div><h2>' + esc(a.name) + '</h2><p>' + esc(a.cat || tx("defaultCat")) + '</p></div></div>'
+   + '<div class="cta"><a class="btn go" href="' + esc(dlUrl(l.url)) + '" download rel="noopener">' + DL_ICON + '<span aria-live="polite">' + esc(tx("downloadBtn")) + ' ' + esc(l.v) + (l.size ? ' (' + esc(l.size) + ')' : '') + '</span></a>'
+   + '<button class="btn ghost" onclick="shareApp(' + escAttr(JSON.stringify(a.id)) + ',' + escAttr(JSON.stringify(a.name)) + ')">' + esc(tx("shareBtn")) + '</button>'
+   + '<button class="btn ghost" onclick="copyText(' + escAttr(JSON.stringify(dlUrl(l.url))) + ',' + escAttr(JSON.stringify(tx("toastCopyApk"))) + ')">' + esc(tx("copyBtn")) + '</button>'
+   + (user ? '<button class="btn ghost" data-edit="' + esc(a.id) + '">Edit atau rilis versi baru</button>' : '') + '</div>' + (/^https:\/\/github\.com\//.test(dlUrl(l.url)) ? '<p class="src">' + SHIELD + esc(tx("srcNote")) + '</p>' : '') + '</section>'
+   + '<dl class="spec"><div><dt>' + esc(tx("specVersion")) + '</dt><dd>' + esc(l.v) + '</dd></div><div><dt>' + esc(tx("specSize")) + '</dt><dd>' + esc(l.size || "-") + '</dd></div><div><dt>' + esc(tx("specUpdated")) + '</dt><dd>' + esc(l.date || "-") + '</dd></div><div><dt>' + esc(tx("specPackage")) + '</dt><dd>' + esc(a.pkg || "-") + '</dd></div></dl>'
+   + '<h3>' + esc(tx("aboutHeading")) + '</h3><p class="desc">' + esc(a.desc || "") + '</p>'
+   + '<details class="how"><summary>' + esc(tx("howSummary")) + '</summary><ol><li>' + esc(tx("howStep1")) + '</li><li>' + esc(tx("howStep2")) + '</li><li>' + esc(tx("howStep3")) + '</li></ol></details>'
+   + '<h3>' + esc(tx("historyHeading")) + '</h3><div class="vlist">' + (a.versions || []).map(function(x, i){
       var del = user ? '<button class="btn ghost" data-editver="' + esc(a.id) + '" data-v="' + esc(x.v) + '">Edit</button>' + (i > 0 ? '<button class="btn ghost" data-delver="' + esc(a.id) + '" data-v="' + esc(x.v) + '">Hapus</button>' : '') : '';
-      return '<div class="vrow' + (i === 0 ? ' cur' : '') + '"><div class="t"><b>' + esc(x.v) + '</b><small>' + esc(x.date) + (x.size ? ', ' + esc(x.size) : '') + '</small><p class="desc">' + esc(x.log || "") + '</p></div><div class="vact"><a class="btn ghost" href="' + esc(dlUrl(x.url)) + '" download rel="noopener">Unduh</a>' + del + '</div></div>';
+      return '<div class="vrow' + (i === 0 ? ' cur' : '') + '"><div class="t"><b>' + esc(x.v) + '</b><small>' + esc(x.date) + (x.size ? ', ' + esc(x.size) : '') + '</small><p class="desc">' + esc(x.log || "") + '</p></div><div class="vact"><a class="btn ghost" href="' + esc(dlUrl(x.url)) + '" download rel="noopener">' + esc(tx("verDownload")) + '</a>' + del + '</div></div>';
     }).join("") + '</div>';
 }
 // Umpan balik saat tombol unduh ditekan (unduhan tetap berjalan normal).
 document.addEventListener("click", function(e){
   var a = e.target.closest("a.go[download]"); if (!a || a.dataset.busy) return;
   var t = a.querySelector("span"); if (!t) return;
-  var old = t.textContent; a.dataset.busy = "1"; t.textContent = "Unduhan dimulai";
+  var old = t.textContent; a.dataset.busy = "1"; t.textContent = tx("downloadStarted");
   setTimeout(function(){ t.textContent = old; delete a.dataset.busy; }, 2600);
 });
 var homeY = 0;   // posisi gulir daftar, dipulihkan saat kembali dari halaman detail
@@ -438,6 +451,7 @@ $("#btnDev").addEventListener("click", function(){
   $("#dStat").textContent = apps.length + " aplikasi, " + v + " versi rilis tersimpan.";
   $("#sName").value = site.name || CONFIG.siteName; $("#sFoot").value = site.footer || CONFIG.footer;
   $("#sMaint").checked = !!site.maint; $("#sMsg").value = site.msg || "";
+  buildTxEditor();
   pendingLogo = null; $("#iFile").value = ""; $("#pvLogo").src = site.logo || DEFAULT_LOGO;
   clearAcc(); dmsg(""); $("#devDlg").showModal();
 });
@@ -458,6 +472,36 @@ $("#iReset").addEventListener("click", function(){
 $("#sSave").addEventListener("click", function(){
   db.collection("config").doc("site").set({ name: $("#sName").value.trim(), footer: $("#sFoot").value.trim(), maint: $("#sMaint").checked, msg: $("#sMsg").value.trim() }, { merge: true })
     .then(function(){ dmsg("Pengaturan tersimpan."); }).catch(function(e){ dmsg(e.message, 1); });
+});
+/* ---------- teks halaman: satu kolom per teks bawaan; kolom kosong = pakai bawaan ---------- */
+function buildTxEditor(){
+  var h = "";
+  TEXTS.forEach(function(g){
+    h += '<h3 class="txg">' + esc(g.title) + '</h3>';
+    g.items.forEach(function(it){
+      var id = "tx_" + it.key, val = (site.texts && typeof site.texts[it.key] === "string") ? site.texts[it.key] : "";
+      h += '<label for="' + id + '">' + esc(it.label) + '</label>' + (it.long
+        ? '<textarea id="' + id + '" data-txk="' + esc(it.key) + '" rows="2" maxlength="400" placeholder="' + esc(it.def) + '">' + esc(val) + '</textarea>'
+        : '<input id="' + id + '" data-txk="' + esc(it.key) + '" maxlength="400" placeholder="' + esc(it.def) + '" value="' + esc(val) + '">');
+    });
+  });
+  $("#txEditor").innerHTML = h;
+}
+$("#txSave").addEventListener("click", function(){
+  var o = {};
+  document.querySelectorAll("#txEditor [data-txk]").forEach(function(el){
+    var k = el.dataset.txk, v = el.value.trim().slice(0, 400);
+    if (v && v !== TX_DEF[k]) o[k] = v;
+  });
+  db.collection("config").doc("site").set({ texts: o }, { mergeFields: ["texts"] })
+    .then(function(){ dmsg("Teks halaman tersimpan. Tampilan developer langsung berubah, situs publik ikut berubah dalam sekitar 15 menit."); })
+    .catch(function(e){ dmsg(e.message, 1); });
+});
+$("#txReset").addEventListener("click", function(){
+  if (!confirm("Kembalikan semua teks halaman ke bawaan?")) return;
+  document.querySelectorAll("#txEditor [data-txk]").forEach(function(el){ el.value = ""; });
+  db.collection("config").doc("site").set({ texts: {} }, { mergeFields: ["texts"] })
+    .then(function(){ dmsg("Semua teks dikembalikan ke bawaan."); }).catch(function(e){ dmsg(e.message, 1); });
 });
 $("#bExp").addEventListener("click", function(){
   var blob = new Blob([JSON.stringify({ apps: apps, site: site }, null, 2)], { type: "application/json" });
