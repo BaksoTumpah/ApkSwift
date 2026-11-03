@@ -61,7 +61,12 @@
   <label for="fUrl">atau tempel link unduhan langsung</label><input id="fUrl" type="url" placeholder="https://...">
   <details><summary>Pengaturan GitHub (hanya tersimpan di perangkat ini)</summary>
     <label for="gRepo">Repo publik (pemilik/nama)</label><input id="gRepo" placeholder="username/apk-files">
-    <label for="gTok">Token akses (izin Contents: read &amp; write)</label><input id="gTok" type="password" autocomplete="off">
+    <form id="ghForm" autocomplete="on">
+      <input class="vh" type="text" name="username" value="apkswift-github" autocomplete="username" tabindex="-1" aria-hidden="true" readonly>
+      <label for="gTok">Token akses (izin Contents: read &amp; write)</label><input id="gTok" name="password" type="password" autocomplete="current-password">
+      <p class="hint">Token hilang dari penyimpanan situs saat tab ditutup. Ketuk Simpan token agar pengelola kata sandi di browser menyimpan dan mengisinya otomatis lain kali.</p>
+      <button class="btn ghost" type="submit" id="gSaveTok">Simpan token</button>
+    </form>
   </details>
   <div class="err" id="fErr"></div>
   <div class="acts">
@@ -318,6 +323,17 @@ function ghB64(file){   // isi berkas -> base64 (tanpa awalan data:)
     fr.readAsDataURL(file);
   });
 }
+function keepToken(tok){   // minta browser menyimpan token di pengelola kata sandi (hanya jika didukung)
+  try { if (window.PasswordCredential && navigator.credentials) navigator.credentials.store(new PasswordCredential({ id: "apkswift-github", name: "Token GitHub ApkSwift", password: tok })).catch(function(){}); } catch (e) {}
+}
+$("#ghForm").addEventListener("submit", function(e){
+  e.preventDefault();
+  var tok = $("#gTok").value.replace(/[^\x21-\x7E]/g, "");
+  if (!tok) { $("#fErr").textContent = "Tempel token dulu."; return; }
+  try { sessionStorage.setItem("gh_tok", tok); } catch (x) {}
+  keepToken(tok); $("#fErr").textContent = ""; $("#gSaveTok").textContent = "Token tersimpan";
+  setTimeout(function(){ $("#gSaveTok").textContent = "Simpan token"; }, 2000);
+});
 function ghSafeName(n){ return String(n).replace(/[^A-Za-z0-9._-]/g, "_"); }
 function ghRelUrl(repo, tag, name){ return "https://github.com/" + repo + "/releases/download/" + encodeURIComponent(tag) + "/" + encodeURIComponent(name); }
 // Link unduhan selalu ke GitHub Releases: link berkas-di-repo (apk/<tag>/<nama>) diubah ke link rilisnya.
@@ -358,6 +374,7 @@ async function ghUpload(file, tag, title){
   if (!repo || !tok) throw new Error("Isi repo dan token GitHub dulu (bagian Pengaturan GitHub).");
   if (!/^[\w.-]+\/[\w.-]+$/.test(repo)) throw new Error('Format repo harus "pemilik/nama", contoh: username/apk-files (bukan link).');
   try { localStorage.setItem("gh_repo", repo); sessionStorage.setItem("gh_tok", tok); } catch (e) {}
+  keepToken(tok);
   var H = { Authorization: "Bearer " + tok, Accept: "application/vnd.github+json" };
   var name = ghSafeName(file.name), rel = null;
   $("#fSave").textContent = "Mengunggah ke GitHub...";
