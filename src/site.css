@@ -60,7 +60,7 @@ main{min-height:46vh;padding-top:4px}
 .sec{display:flex;align-items:baseline;gap:10px;font:600 16px/1.2 var(--d);letter-spacing:-.02em;margin:0 0 10px}
 .sec small{color:var(--muted);font:500 14px "Onest",sans-serif;letter-spacing:0}
 .list{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,360px),1fr));gap:4px 10px;margin:0 -12px}
-.row{display:flex;align-items:center;gap:14px;padding:12px;border-radius:22px;text-decoration:none;transition:background .15s,box-shadow .15s}
+.row{contain:layout style;display:flex;align-items:center;gap:14px;padding:12px;border-radius:22px;text-decoration:none;transition:background .15s,box-shadow .15s}
 .row:hover{background:var(--surface);box-shadow:0 0 0 1px var(--line),0 16px 28px -22px rgba(8,52,46,.6)}
 .row:hover .ico{transform:rotate(-5deg) scale(1.06)}
 .row .ico{width:56px;height:56px}
@@ -81,7 +81,7 @@ main{min-height:46vh;padding-top:4px}
 .ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--edge)}
 .ghost:hover{background:var(--tint)}
 
-.back{min-height:44px;position:sticky;top:calc(env(safe-area-inset-top,0px) + 10px);z-index:5;display:inline-flex;align-items:center;gap:8px;margin:2px 0 16px;padding:6px 18px 6px 6px;border-radius:999px;background:var(--surface);color:var(--ink);font-weight:600;font-size:14px;text-decoration:none;box-shadow:inset 0 0 0 1px var(--line),0 10px 22px -14px rgba(8,52,46,.6)}
+.back{will-change:transform;min-height:44px;position:sticky;top:calc(env(safe-area-inset-top,0px) + 10px);z-index:5;display:inline-flex;align-items:center;gap:8px;margin:2px 0 16px;padding:6px 18px 6px 6px;border-radius:999px;background:var(--surface);color:var(--ink);font-weight:600;font-size:14px;text-decoration:none;box-shadow:inset 0 0 0 1px var(--line),0 10px 22px -14px rgba(8,52,46,.6)}
 .back i{width:30px;height:30px;border-radius:50%;background:var(--tint);display:grid;place-items:center;transition:transform .18s}
 .back:hover i{transform:translateX(-3px)}
 .back svg{width:17px;height:17px}
@@ -94,7 +94,7 @@ main{min-height:46vh;padding-top:4px}
 .cta{display:flex;gap:10px;flex-wrap:wrap;margin-top:26px}
 .src{display:flex;align-items:center;gap:8px;margin:16px 0 0;font-size:14px;opacity:.8}
 .src svg{flex:none}
-.dhead .ghost{color:#f0fbf7;background:rgba(6,18,16,.45);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.5)}
+.dhead .ghost{color:#f0fbf7;background:rgba(6,18,16,.6);box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.5)}
 .dhead .ghost:hover{background:rgba(255,255,255,.16)}
 @media (max-width:560px){.dhead{padding:26px 22px 24px;border-radius:30px}.dhead .ico{width:78px;height:78px;font-size:34px}.dtop{gap:16px}.cta .go{flex:1 1 100%}}
 
@@ -139,7 +139,7 @@ h3{font:700 18px/1.2 var(--d);letter-spacing:-.025em;margin:42px 0 14px}
 footer{margin-top:56px;padding:26px 0 64px;border-top:1px solid var(--line);color:var(--muted);font-size:14px}
 
 dialog{background:var(--surface);color:var(--ink);border:0;border-radius:30px;padding:28px;width:min(600px,calc(100vw - 20px));max-height:92vh;box-shadow:0 40px 80px -24px rgba(0,0,0,.7)}
-dialog::backdrop{background:rgba(3,18,17,.66);backdrop-filter:blur(3px)}
+dialog::backdrop{background:rgba(3,18,17,.72)}
 dialog h2{font:700 20px/1.2 var(--d);letter-spacing:-.03em}
 label{display:block;font-size:14px;font-weight:500;color:var(--muted);margin:14px 0 5px}
 dialog input,dialog select,dialog textarea{width:100%;background:var(--bg);border:0;box-shadow:inset 0 0 0 1.5px var(--edge);border-radius:14px;padding:11px 14px}

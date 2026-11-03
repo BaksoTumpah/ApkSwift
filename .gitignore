@@ -70,3 +70,12 @@ node_modules/
 
 # Hasil build (dibuat otomatis oleh scripts/build.mjs)
 public/
+
+# Jangan pernah commit rahasia
+.env*
+*.pem
+*.key
+*.p12
+*serviceAccount*.json
+*service-account*.json
+*-adminsdk-*.json

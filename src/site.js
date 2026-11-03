@@ -79,22 +79,10 @@
     apply();
   }
 
-  /* ---------- mode perbaikan: dibaca langsung dari Firestore (hanya satu dokumen kecil) ---------- */
-  var fs = document.documentElement.dataset.fs;
-  var idle = window.requestIdleCallback || function (f) { setTimeout(f, 1500); };
-  if (fs && window.fetch) idle(function () {
-    fetch(fs).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
-      var f = d && d.fields, main = $("#main");
-      if (f && f.maint && f.maint.booleanValue && main) {
-        var p = document.createElement("p"); p.className = "empty";
-        p.textContent = (f.msg && f.msg.stringValue) || "Situs sedang diperbaiki, coba lagi nanti.";
-        main.textContent = ""; main.appendChild(p);
-      }
-    }).catch(function () {});
-  });
-
   /* ---------- reaksi kursor (mouse/touchpad saja) ---------- */
   if (window.matchMedia && matchMedia("(hover:hover) and (pointer:fine)").matches && !matchMedia("(prefers-reduced-motion:reduce)").matches) {
+    var scrolling = false, st = 0;
+    window.addEventListener("scroll", function () { scrolling = true; clearTimeout(st); st = setTimeout(function () { scrolling = false; }, 120); }, { passive: true });
     var slots = [
       { sel: ".btn,.chips button,.row,.back,.devbar button,.brand", cur: null },
       { sel: ".feat,.dhead", cur: null }
@@ -102,6 +90,7 @@
     var clear = function (el) { ["--mx", "--my", "--px", "--py"].forEach(function (k) { el.style.removeProperty(k); }); };
     var paint = function () {
       raf = 0;
+      if (scrolling) return;
       slots.forEach(function (sl) {
         var el = sl.cur; if (!el) return;
         var r = el.getBoundingClientRect(); if (!r.width || !r.height) return;

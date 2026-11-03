@@ -4,15 +4,24 @@ on:
     workflows: ["Deploy to Firebase Hosting on PR", "Deploy to Firebase Hosting on merge"]
     types: [completed]
 
+permissions: {}
+
 jobs:
   notify:
     runs-on: ubuntu-latest
     steps:
       - name: Kirim ke Telegram
+        env:
+          TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          CHAT: ${{ secrets.TELEGRAM_CHAT_ID }}
+          RESULT: ${{ github.event.workflow_run.conclusion }}
+          REPO: ${{ github.repository }}
+          NAME: ${{ github.event.workflow_run.name }}
+          URL: ${{ github.event.workflow_run.html_url }}
         run: |
-          if [ "${{ github.event.workflow_run.conclusion }}" = "success" ]; then ICON="✅"; else ICON="❌"; fi
-          curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
-            --data-urlencode "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}" \
-            --data-urlencode "text=$ICON ${{ github.repository }}
-          Workflow: ${{ github.event.workflow_run.name }}
-          ${{ github.event.workflow_run.html_url }}"
+          if [ "$RESULT" = "success" ]; then ICON="✅"; else ICON="❌"; fi
+          curl -s --max-time 20 -X POST "https://api.telegram.org/bot${TOKEN}/sendMessage" \
+            --data-urlencode "chat_id=${CHAT}" \
+            --data-urlencode "text=${ICON} ${REPO}
+          Workflow: ${NAME}
+          ${URL}" > /dev/null

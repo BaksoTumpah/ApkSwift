@@ -1,0 +1,23 @@
+// Referensi aturan Firestore untuk ApkSwift. Tempel di Firebase Console > Firestore > Rules, lalu Publish.
+// Semua orang boleh membaca data publik. Hanya akun developer yang masuk boleh menulis.
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function dev() { return request.auth != null && request.auth.token.email == 'dev@toko-apk.local'; }
+
+    match /apps/{id} {
+      allow get, list: if true;
+      allow create, update: if dev()
+        && request.resource.data.keys().hasOnly(['name','pkg','cat','desc','icon','versions','updated'])
+        && request.resource.data.name is string && request.resource.data.name.size() <= 80
+        && request.resource.data.versions is list && request.resource.data.versions.size() <= 200;
+      allow delete: if dev();
+    }
+    match /config/{doc} {
+      allow get: if true;
+      allow list: if false;
+      allow write: if dev();
+    }
+    match /{document=**} { allow read, write: if false; }
+  }
+}

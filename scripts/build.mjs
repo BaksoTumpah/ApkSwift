@@ -148,7 +148,7 @@ function headHtml(o) {
     ...(ctx.fonts
       ? ctx.fonts.preload.map((u) => '<link rel="preload" as="font" type="font/woff2" crossorigin href="' + esc(P.file(u.replace(/^\//, ""))) + '">')
       : ['<link rel="preconnect" href="https://fonts.googleapis.com">', '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>',
-         '<link rel="stylesheet" href="' + FONT_URL + '" media="print" onload="this.media=\'all\'">']),
+         '<link rel="stylesheet" href="' + FONT_URL + '">']),
     css,
     ...ld.map((j) => '<script type="application/ld+json">' + JSON.stringify(j).replace(/</g, "\\u003c") + "</script>"),
   ].filter(Boolean).join("\n");
@@ -157,9 +157,8 @@ function page(o) {
   const { depth, abs, ctx, body } = o;
   const P = paths(depth, abs);
   const js = INLINE ? "<script>\n" + ctx.js + "</script>" : '<script src="' + P.file(ctx.jsPath) + '" defer></script>';
-  const fsAttr = ctx.fsUrl ? ' data-fs="' + esc(ctx.fsUrl) + '"' : "";
   const txAttr = ' data-tx="' + esc(JSON.stringify(Object.fromEntries(JS_TEXT_KEYS.map((k) => [k, ctx.t[k]])))) + '"';
-  return "<!doctype html>\n<html lang=\"id\"" + fsAttr + txAttr + ">\n<head>\n" + headHtml(o) + "\n</head>\n<body>\n" + body + "\n" + js + "\n</body>\n</html>\n";
+  return "<!doctype html>\n<html lang=\"id\"" + txAttr + ">\n<head>\n" + headHtml(o) + "\n</head>\n<body>\n" + body + "\n" + js + "\n</body>\n</html>\n";
 }
 function header(ctx, depth, isHome, abs = false) {
   const P = paths(depth, abs);
@@ -306,12 +305,15 @@ const ctx = {
   apps: valid, css, js, cssPath, jsPath, fonts,
   siteName: data.site.name || CFG.siteName, t: T, tagline: T.tagline, footer: data.site.footer || CFG.footer,
   logo: addImage("logo", logoSrc), icons: new Map(),
-  fsUrl: opt("mock") || INLINE ? "" : FS_BASE + "/v1/projects/" + CFG.project + "/databases/(default)/documents/config/site?key=" + CFG.apiKey,
 };
 for (const a of valid) { const im = dataUri(a.icon); if (im) ctx.icons.set(a.id, addImage("icon-" + safeId(a.id), im)); }
 
-put("index.html", homePage(ctx));
-for (const a of valid) put("app/" + safeId(a.id) + "/index.html", appPage(a, ctx));
+/* Mode perbaikan: dibaca saat build (tidak ada lagi permintaan Firestore dari pengunjung, jadi lonjakan lalu lintas atau bot tidak menghabiskan kuota). */
+const maintify = (html) => data.site.maint
+  ? html.replace(/<main id="main"[^>]*>[\s\S]*?<\/main>/, '<main id="main"><p class="empty">' + esc(data.site.msg || "Situs sedang diperbaiki, coba lagi nanti.") + "</p></main>").replace("</title>", '</title>\n<meta name="robots" content="noindex">')
+  : html;
+put("index.html", maintify(homePage(ctx)));
+for (const a of valid) put("app/" + safeId(a.id) + "/index.html", maintify(appPage(a, ctx)));
 put("developer/index.html", devPage(ctx));
 put("404.html", notFoundPage(ctx));
 const lastmod = (t) => (t ? new Date(t).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10));

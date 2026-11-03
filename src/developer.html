@@ -293,7 +293,7 @@ function openForm(a){
   $("#fApk").value = ""; $("#fIcon").value = ""; $("#fErr").textContent = "";
   $("#fDel").classList.toggle("hide", !a);
   $("#gRepo").value = CONFIG.ghRepo || "";
-  try { $("#gRepo").value = localStorage.getItem("gh_repo") || CONFIG.ghRepo || ""; $("#gTok").value = localStorage.getItem("gh_tok") || ""; } catch (e) {}
+  try { $("#gRepo").value = localStorage.getItem("gh_repo") || CONFIG.ghRepo || ""; $("#gTok").value = sessionStorage.getItem("gh_tok") || ""; localStorage.removeItem("gh_tok"); } catch (e) {}
   $("#formDlg").showModal();
 }
 function slug(s){ return s.toLowerCase().replace(/[^a-z0-9.]+/g, "-").replace(/^-+|-+$/g, ""); }
@@ -357,7 +357,7 @@ async function ghUpload(file, tag, title){
   var tok = $("#gTok").value.replace(/[^\x21-\x7E]/g, "");   // buang spasi, baris baru, karakter aneh bekas salin-tempel
   if (!repo || !tok) throw new Error("Isi repo dan token GitHub dulu (bagian Pengaturan GitHub).");
   if (!/^[\w.-]+\/[\w.-]+$/.test(repo)) throw new Error('Format repo harus "pemilik/nama", contoh: username/apk-files (bukan link).');
-  try { localStorage.setItem("gh_repo", repo); localStorage.setItem("gh_tok", tok); } catch (e) {}
+  try { localStorage.setItem("gh_repo", repo); sessionStorage.setItem("gh_tok", tok); } catch (e) {}
   var H = { Authorization: "Bearer " + tok, Accept: "application/vnd.github+json" };
   var name = ghSafeName(file.name), rel = null;
   $("#fSave").textContent = "Mengunggah ke GitHub...";
@@ -541,6 +541,7 @@ $("#aGo").addEventListener("click", async function(){
   function clear(el){ ["--mx", "--my", "--px", "--py"].forEach(function(k){ el.style.removeProperty(k); }); }
   function paint(){
     raf = 0;
+    if (scrolling) return;
     slots.forEach(function(sl){
       var el = sl.cur; if (!el) return;
       var r = el.getBoundingClientRect(); if (!r.width || !r.height) return;
@@ -550,6 +551,8 @@ $("#aGo").addEventListener("click", async function(){
       el.style.setProperty("--py", Math.max(-1, Math.min(1, y / r.height * 2 - 1)).toFixed(3));
     });
   }
+  var scrolling = false, st = 0;
+  window.addEventListener("scroll", function(){ scrolling = true; clearTimeout(st); st = setTimeout(function(){ scrolling = false; }, 120); }, { passive: true });
   document.addEventListener("pointermove", function(e){
     if (e.pointerType !== "mouse") return;
     lx = e.clientX; ly = e.clientY;
