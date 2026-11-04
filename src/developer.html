@@ -243,7 +243,7 @@ function shareApp(id, name){
 }
 function detail(a){
   var l = latest(a);
-  return back()
+  return back() + '<article>'
    + '<section class="dhead" style="--h:' + hue(a.id || a.name || "") + '">' + SWOOSH
    + '<div class="dtop">' + icon(a) + '<div><h2>' + esc(a.name) + '</h2><p>' + esc(a.cat || tx("defaultCat")) + '</p></div></div>'
    + '<div class="cta"><a class="btn go" href="' + esc(dlUrl(l.url)) + '" download rel="noopener">' + DL_ICON + '<span aria-live="polite">' + esc(tx("downloadBtn")) + ' ' + esc(l.v) + (l.size ? ' (' + esc(l.size) + ')' : '') + '</span></a>'
@@ -256,7 +256,7 @@ function detail(a){
    + '<h3>' + esc(tx("historyHeading")) + '</h3><div class="vlist">' + (a.versions || []).map(function(x, i){
       var del = user ? '<button class="btn ghost" data-editver="' + esc(a.id) + '" data-v="' + esc(x.v) + '">Edit</button>' + (i > 0 ? '<button class="btn ghost" data-delver="' + esc(a.id) + '" data-v="' + esc(x.v) + '">Hapus</button>' : '') : '';
       return '<div class="vrow' + (i === 0 ? ' cur' : '') + '"><div class="t"><b>' + esc(x.v) + '</b><small>' + esc(x.date) + (x.size ? ', ' + esc(x.size) : '') + '</small><p class="desc">' + esc(x.log || "") + '</p></div><div class="vact"><a class="btn ghost" href="' + esc(dlUrl(x.url)) + '" download rel="noopener">' + esc(tx("verDownload")) + '</a>' + del + '</div></div>';
-    }).join("") + '</div>';
+    }).join("") + '</div></article>';
 }
 // Umpan balik saat tombol unduh ditekan (unduhan tetap berjalan normal).
 document.addEventListener("click", function(e){
