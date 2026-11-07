@@ -4,13 +4,32 @@ on:
     workflows: ["Deploy to Firebase Hosting on PR", "Deploy to Firebase Hosting on merge"]
     types: [completed]
 
-permissions: {}
+permissions:
+  actions: read
 
 jobs:
   notify:
     runs-on: ubuntu-latest
     steps:
+      - name: Tentukan perlu kirim atau tidak
+        id: chk
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          RUN_ID: ${{ github.event.workflow_run.id }}
+          RESULT: ${{ github.event.workflow_run.conclusion }}
+          EVENT: ${{ github.event.workflow_run.event }}
+        run: |
+          send=true
+          # Run terjadwal yang sukses tapi tidak men-deploy apa pun (situs tidak berubah) tidak perlu dikabarkan.
+          if [ "$RESULT" = "success" ] && [ "$EVENT" = "schedule" ]; then
+            deploy=$(gh api "repos/$REPO/actions/runs/$RUN_ID/jobs" --jq '[.jobs[].steps[] | select(.name | test("action-hosting-deploy")) | .conclusion] | first // "none"')
+            echo "langkah deploy: $deploy"
+            if [ "$deploy" != "success" ]; then send=false; fi
+          fi
+          echo "send=$send" >> "$GITHUB_OUTPUT"
       - name: Kirim ke Telegram
+        if: steps.chk.outputs.send == 'true'
         env:
           TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           CHAT: ${{ secrets.TELEGRAM_CHAT_ID }}
